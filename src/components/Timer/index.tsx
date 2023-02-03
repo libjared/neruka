@@ -1,26 +1,23 @@
 import { differenceInHours, intervalToDuration } from 'date-fns';
-import { useCallback, useState } from 'react';
-// import { addDays, format } from 'date-fns/fp'
+import DurationInput from '../DurationInput';
 import './Timer.css';
 
 function Timer() {
-  const [ settedAlarmTime, setAlarmTime ] = useState<Date | null>(null); // setted: adjective
-
-  const timeDisplayText = getTimeDisplayText(settedAlarmTime);
-  const onSetClick = useCallback((that) => {
-
-  });
+  // const [ alarmTime, setAlarmTime ] = useState<Date | null>(null);
+  // const [ requestedDuration, setRequestedDuration ] = useState<Duration>({ minutes: 15 });
+  // const timeDisplayText = getTimeDisplayText(alarmTime);
+  const onClickSet = () => {
+  };
 
   return (
     <div className="Timer">
+      <div className="Timer-display">
+        <DurationInput />
+      </div>
       <nav className="Timer-controls">
-        <input type="time" />
-        <input type="button" value="Set" onClick={onClick} />
+        <input type="button" value="Set" onClick={onClickSet} />
         <input type="button" value="Clear" />
       </nav>
-      <div className="Timer-display">
-        {timeDisplayText}
-      </div>
     </div>
   );
 }

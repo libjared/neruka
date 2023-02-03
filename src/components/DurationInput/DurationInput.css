@@ -1,0 +1,30 @@
+.DurationInput-main {
+  display: inline-block;
+  user-select: none;
+}
+.DurationInput-main:focus {
+  outline: none;
+}
+
+.DurationInput-area {
+  border-bottom: 2px solid #3c4043;
+  cursor: pointer;
+}
+.DurationInput-area.editing {
+  border-bottom: 2px solid #8ab4f8;
+  cursor: default;
+}
+
+.Digit, .Label {
+  color: #5f6368;
+}
+.Digit.lit, .Label.lit {
+  color: #e8eaed;
+}
+
+.DurationInput-area .Label.seconds {
+  border-left: 1px solid transparent;
+}
+.DurationInput-area.editing .Label.seconds {
+  border-left: 1px solid white;
+}
