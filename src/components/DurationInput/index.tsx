@@ -1,4 +1,3 @@
-/* eslint-disable no-fallthrough */
 import classNames from 'classnames';
 import { useState } from 'react';
 import './DurationInput.css';
@@ -26,7 +25,6 @@ function DurationInput() {
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (ev) => {
     console.assert(isEditing);
-    console.log(ev.key);
     if (ev.key === 'Backspace') {
       if (digits.length <= 0) return;
       if (lightLength === 0) {
@@ -58,9 +56,7 @@ function DurationInput() {
     }
   };
 
-  // TODO reverse
   const ssmmhh = [ ...digits ].reverse();
-  console.log(ssmmhh);
 
   const elements = [];
   const digitsToWrite = isEditing ? 6 : ssmmhh.length;
