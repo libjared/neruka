@@ -44,6 +44,7 @@ function trimDigits(digits: number[]): number[] {
   for (let i = 0; i < newDigits.length - 1; i++) {
     if (newDigits[i] === 0) {
       newDigits.shift();
+      i--;
     } else {
       break;
     }
