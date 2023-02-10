@@ -1,4 +1,4 @@
-import { differenceInHours, intervalToDuration } from 'date-fns';
+import { add, differenceInHours, intervalToDuration } from 'date-fns';
 import { useState } from 'react';
 import DurationInput from '../DurationInput';
 import './Timer.css';
@@ -15,13 +15,13 @@ import './Timer.css';
 // Timer
 // - holds state, and converts between types.
 // - if alarmTime == null
-// -   child is DurationDisplay
+// -   child is DurationInput
 // -   if currentDuration is not null, we're "paused". send currentDuration.
 // -   otherwise, we're "stopped". send originalDuration.
 // - otherwise
-// -   child is TimeDisplay
+// -   child is CountdownDisplay
 
-// DurationDisplay(duration, onRequestDurationChange)
+// DurationInput(duration, onRequestDurationChange)
 // - when not editing, displays the duration without questioning.
 // - when editing, convert the given duration to a state of digits.
 //   - on finished editing, call onRequestDurationChange. if user hit the enter key, callback to make it a quick-start.
@@ -33,30 +33,82 @@ import './Timer.css';
 // - renders one digit or label character.
 
 function Timer() {
+  // when the timer is stopped, show this. after editing, update this. when clicking Start or Reset, copy this to currentDuration.
   const [ originalDuration, setOriginalDuration ] = useState<Duration>({ minutes: 15 });
-  const [ currentDuration, setCurrentDuration ] = useState<Duration | null>(originalDuration);
+  // when the timer is stopped, it's null.
+  // when the timer is running, it's null.
+  // when the timer is paused, show this.
+  const [ currentDuration, setCurrentDuration ] = useState<Duration | null>(null);
+  // when the timer is stopped, it's null.
+  // when the timer is running, calculate the time remaining from this.
+  // when the timer is paused, it's null.
   const [ alarmTime, setAlarmTime ] = useState<Date | null>(null);
 
-  const startTimer = () => {
+  const startTimer = (): void => {
+    // we are stopped or paused.
+    const targetDuration = currentDuration !== null ? currentDuration : originalDuration;
+    // convert duration into time
+    const targetTime = add(new Date(), targetDuration);
+    setAlarmTime(targetTime);
   };
-  const onRequestDuration = () => {
+
+  const stopTimer = (): void => {
+    // we are running.
+    if (alarmTime === null) throw new Error('Expected alarmTime to be non-null.');
+    const interval: Interval = {
+      start: new Date(),
+      end: alarmTime
+    };
+    const targetDuration = intervalToDuration(interval);
+    setCurrentDuration(targetDuration);
   };
-  const onQuickStart = () => {
+
+  const resetTimer = (): void => {
+    // we could be running, stopped, or paused.
+    setCurrentDuration(null);
+    setAlarmTime(null);
   };
+
+  let display: JSX.Element;
+  if (alarmTime !== null) {
+    // running
+    display = <CountdownDisplay time={alarmTime} />;
+  } else {
+    // paused or stopped
+    let duration = currentDuration !== null ? currentDuration : originalDuration;
+    const onFinishEditing = (newDuration: Duration, immediatelyStart: boolean): void => {
+      setOriginalDuration(newDuration);
+      setCurrentDuration(null);
+      if (immediatelyStart) {
+        // HACK: if we just call startTimer(), originalDuration and currentDuration won't be updated yet,
+        // so we violate DRY here.
+        const targetTime = add(new Date(), newDuration);
+        setAlarmTime(targetTime);
+      }
+    };
+    display = <DurationInput duration={duration} onFinishEditing={onFinishEditing} />;
+  }
 
   return (
     <div className="Timer">
       <div className="Timer-display">
-        <DurationInput
-          onStart={onStartByInput}
-        />
+        {display}
       </div>
       <nav className="Timer-controls">
-        <input type="button" value="Set" onClick={() => { startTimer(); }} />
-        <input type="button" value="Clear" />
+        {alarmTime !== null && <input type="button" value="Stop" onClick={stopTimer} />}
+        {alarmTime === null && <input type="button" value="Start" onClick={startTimer} />}
+        <input type="button" value="Reset" onClick={resetTimer} />
       </nav>
     </div>
   );
+}
+
+type CountdownDisplayProps = {
+  time: Date
+};
+
+function CountdownDisplay(props: CountdownDisplayProps) {
+  return null;
 }
 
 function getTimeDisplayText(settedAlarmTime: Date | null) {
