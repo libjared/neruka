@@ -172,6 +172,7 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
       onBlur={onBlur}
       onKeyDown={onKeyDown}
       tabIndex={0}
+      role={isEditing ? "textbox" : "timer"}
     >
       <div className={innerClass}>
         {children}

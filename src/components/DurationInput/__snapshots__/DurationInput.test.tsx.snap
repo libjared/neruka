@@ -1,11 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders 1`] = `
+exports[`matches snapshot 1`] = `
 <div
   className="DurationInput-main"
   onBlur={[Function]}
   onFocus={[Function]}
   onKeyDown={[Function]}
+  role="timer"
   tabIndex={0}
 >
   <div
@@ -43,4 +44,64 @@ exports[`renders 1`] = `
     </span>
   </div>
 </div>
+`;
+
+exports[`when the timer is focused matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="DurationInput-main"
+    role="textbox"
+    tabindex="0"
+  >
+    <div
+      class="DurationInput-area editing"
+    >
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Label hours lit"
+      >
+        h
+      </span>
+      <span
+        class="Digit lit"
+      >
+        5
+      </span>
+      <span
+        class="Digit lit"
+      >
+        1
+      </span>
+      <span
+        class="Label minutes lit"
+      >
+        m
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Label seconds lit"
+      >
+        s
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
 `;
