@@ -1,4 +1,4 @@
-import { add, differenceInHours, intervalToDuration } from 'date-fns';
+import { add, intervalToDuration } from 'date-fns';
 import { useState } from 'react';
 import DurationInput from '../DurationInput';
 import './Timer.css';
@@ -109,23 +109,6 @@ type CountdownDisplayProps = {
 
 function CountdownDisplay(props: CountdownDisplayProps) {
   return null;
-}
-
-function getTimeDisplayText(settedAlarmTime: Date | null) {
-  if (settedAlarmTime == null)
-    return "00:00:00";
-
-  const now = new Date();
-
-  const hrs = String(differenceInHours(now, settedAlarmTime)).padStart(2, "0");
-  const diff = intervalToDuration({
-    end: settedAlarmTime,
-    start: now
-  });
-  // TODO check negative
-  const min = String(diff.minutes || 0).padStart(2, "0");
-  const sec = String(diff.seconds || 0).padStart(2, "0");
-  return `${hrs}:${min}:${sec}`;
 }
 
 export default Timer;
