@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { useState } from 'react';
+import { Digit, Label } from '../Digit';
 import './DurationInput.css';
 
 function renderDigits(hhmmss: number[], lightLength: number | null): JSX.Element[] {
@@ -186,39 +187,6 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
         {children}
       </div>
     </div>
-  );
-}
-
-type DigitProps = {
-  value: number,
-  isLit: boolean
-};
-
-function Digit({ value, isLit }: DigitProps) {
-  const classes = classNames("Digit", {
-    lit: isLit
-  });
-  return (
-    <span className={classes}>
-      {value.toString().substring(0, 1)}
-    </span>
-  );
-}
-
-type LabelProps = {
-  label: "h" | "m" | "s"
-  isLit: boolean
-};
-
-function Label({ label, isLit }: LabelProps) {
-  const classes = classNames("Label", {
-    hours: label === "h",
-    minutes: label === "m",
-    seconds: label === "s",
-    lit: isLit
-  });
-  return (
-    <span className={classes}>{label}</span>
   );
 }
 
