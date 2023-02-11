@@ -1,4 +1,3 @@
-import renderer from 'react-test-renderer';
 import { fireEvent, render, RenderResult, screen } from '@testing-library/react';
 import DurationInput, { padDigits, trimDigits } from '.';
 
@@ -9,6 +8,7 @@ type AllowedKey = '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'|'Backspace'|'Enter';
 type SetupResult = RenderResult & {
   focusOnTimer: () => void,
   typeKey: (key: AllowedKey) => void,
+  blurTextbox: () => void,
 };
 
 function setup(): SetupResult {
@@ -19,11 +19,15 @@ function setup(): SetupResult {
   const typeKey = (key: AllowedKey) => {
     fireEvent.keyDown(screen.getByRole('textbox'), { key });
   };
+  const blurTextbox = () => {
+    fireEvent.blur(screen.getByRole('textbox'));
+  };
 
   return {
     ...utils,
     focusOnTimer,
     typeKey,
+    blurTextbox,
   };
 }
 
@@ -39,6 +43,16 @@ function setupEnteredTimeCase() {
   utils.typeKey('4');
   utils.typeKey('5');
   utils.typeKey('1');
+  return utils;
+}
+
+function setupAfterEditingCase() {
+  const utils = setup();
+  utils.focusOnTimer();
+  utils.typeKey('4');
+  utils.typeKey('5');
+  utils.typeKey('1');
+  utils.blurTextbox();
   return utils;
 }
 
@@ -70,47 +84,31 @@ describe('when editing', () => {
 
 describe('when typing in a time', () => {
   it('sets the wip text', () => {
-    render(<DurationInput duration={duration} onFinishEditing={noop} />);
-    fireEvent.focus(screen.getByRole('timer'));
-    fireEvent.keyDown(screen.getByRole('textbox'), { key: '4' });
-    fireEvent.keyDown(screen.getByRole('textbox'), { key: '5' });
-    fireEvent.keyDown(screen.getByRole('textbox'), { key: '1' });
+    setupEnteredTimeCase();
     expect(screen.getByRole('textbox').textContent).toBe('00h04m51s');
   });
 
   it('matches snapshot', () => {
-    const { asFragment } = render(<DurationInput duration={duration} onFinishEditing={noop} />);
-    fireEvent.focus(screen.getByRole('timer'));
-    fireEvent.keyDown(screen.getByRole('textbox'), { key: '4' });
-    fireEvent.keyDown(screen.getByRole('textbox'), { key: '5' });
-    fireEvent.keyDown(screen.getByRole('textbox'), { key: '1' });
+    const { asFragment } = setupEnteredTimeCase();
     expect(asFragment()).toMatchSnapshot();
   });
 });
 
 describe('after editing', () => {
   it('switches to the timer view', () => {
-    render(<DurationInput duration={duration} onFinishEditing={noop} />);
-    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    expect(screen.getByRole('timer')).toBeInTheDocument();
-    fireEvent.focus(screen.getByRole('timer'));
-    fireEvent.blur(screen.getByRole('textbox'));
+    setupAfterEditingCase();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.getByRole('timer')).toBeInTheDocument();
   });
 
   it('matches snapshot', () => {
-    const { asFragment } = render(<DurationInput duration={duration} onFinishEditing={noop} />);
-    fireEvent.focus(screen.getByRole('timer'));
-    fireEvent.blur(screen.getByRole('textbox'));
+    const { asFragment } = setupAfterEditingCase();
     expect(asFragment()).toMatchSnapshot();
   });
 });
 
-describe('padDigits', () => {
-  it('works', () => {
-    expect(padDigits([1,5,0,0])).toEqual([0,0,1,5,0,0]);
-  });
+test('padDigits works', () => {
+  expect(padDigits([1,5,0,0])).toEqual([0,0,1,5,0,0]);
 });
 
 describe('trimDigits', () => {
