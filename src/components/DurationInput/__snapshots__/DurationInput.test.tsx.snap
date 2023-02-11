@@ -46,49 +46,48 @@ exports[`after editing matches snapshot 1`] = `
 `;
 
 exports[`matches snapshot 1`] = `
-<div
-  className="DurationInput-main"
-  onBlur={[Function]}
-  onFocus={[Function]}
-  onKeyDown={[Function]}
-  role="timer"
-  tabIndex={0}
->
+<DocumentFragment>
   <div
-    className="DurationInput-area"
+    class="DurationInput-main"
+    role="timer"
+    tabindex="0"
   >
-    <span
-      className="Digit lit"
+    <div
+      class="DurationInput-area"
     >
-      1
-    </span>
-    <span
-      className="Digit lit"
-    >
-      5
-    </span>
-    <span
-      className="Label minutes lit"
-    >
-      m
-    </span>
-    <span
-      className="Digit lit"
-    >
-      0
-    </span>
-    <span
-      className="Digit lit"
-    >
-      0
-    </span>
-    <span
-      className="Label seconds lit"
-    >
-      s
-    </span>
+      <span
+        class="Digit lit"
+      >
+        1
+      </span>
+      <span
+        class="Digit lit"
+      >
+        5
+      </span>
+      <span
+        class="Label minutes lit"
+      >
+        m
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Label seconds lit"
+      >
+        s
+      </span>
+    </div>
   </div>
-</div>
+</DocumentFragment>
 `;
 
 exports[`when editing matches snapshot 1`] = `
@@ -151,7 +150,7 @@ exports[`when editing matches snapshot 1`] = `
 </DocumentFragment>
 `;
 
-exports[`when editing when typing 4 matches snapshot 1`] = `
+exports[`when typing in a time matches snapshot 1`] = `
 <DocumentFragment>
   <div
     class="DurationInput-main"
@@ -182,24 +181,24 @@ exports[`when editing when typing 4 matches snapshot 1`] = `
         0
       </span>
       <span
-        class="Digit"
+        class="Digit lit"
       >
-        0
+        4
       </span>
       <span
-        class="Label minutes"
+        class="Label minutes lit"
       >
         m
       </span>
       <span
-        class="Digit"
+        class="Digit lit"
       >
-        0
+        5
       </span>
       <span
         class="Digit lit"
       >
-        4
+        1
       </span>
       <span
         class="Label seconds lit"
