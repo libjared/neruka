@@ -87,7 +87,8 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     setWipDigits(digitsFromDuration(duration));
     setLightLength(0);
   };
-  const onBlur: React.FocusEventHandler<HTMLDivElement> = () => {
+
+  const saveAndQuit = (startImmediately: boolean) => {
     if (!isEditing) throw new Error('Expected isEditing to be true.');
     if (wipDigits === null) throw new Error('Expected wipDigits to be non-null.');
 
@@ -106,8 +107,13 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     setEditing(false);
     setWipDigits(null);
     setLightLength(null);
-    onFinishEditing(newDuration, false);
+    onFinishEditing(newDuration, startImmediately);
   };
+
+  const onBlur: React.FocusEventHandler<HTMLDivElement> = () => {
+    saveAndQuit(false);
+  };
+
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (ev) => {
     if (!isEditing) throw new Error('Expected isEditing to be true.');
     if (wipDigits === null) throw new Error('Expected wipDigits to be non-null.');
@@ -125,7 +131,7 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
         setLightLength(lightLength - 1);
       }
     } else if (ev.key === 'Enter') {
-      ev.currentTarget.blur();
+      saveAndQuit(true);
     } else if ('0' <= ev.key && ev.key <= '9') {
       const digit = Number(ev.key);
       if (0 > digit || digit > 9) throw new Error('Expected digit to be between 0 and 9 inclusive.');

@@ -57,6 +57,16 @@ function setupAfterEditingCase() {
   return utils;
 }
 
+function setupStartImmediatelyCase() {
+  const utils = setup();
+  utils.focusOnTimer();
+  utils.typeKey('4');
+  utils.typeKey('5');
+  utils.typeKey('1');
+  utils.typeKey('Enter');
+  return utils;
+}
+
 describe('initially', () => {
   it('is in the timer view', () => {
     setup();
@@ -111,6 +121,26 @@ describe('when blurring', () => {
 
   it('matches snapshot', () => {
     const { asFragment } = setupAfterEditingCase();
+    expect(asFragment()).toMatchSnapshot();
+  });
+});
+
+describe('when hitting enter in edit mode', () => {
+  it('switches to the timer view', () => {
+    setupStartImmediatelyCase();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    expect(screen.getByRole('timer')).toBeInTheDocument();
+  });
+
+  it('calls onFinishEditing with startImmediately', () => {
+    const { handleFinishEditing } = setupStartImmediatelyCase();
+    const expectedDuration: Duration = { hours: 0, minutes: 4, seconds: 51 };
+    expect(handleFinishEditing).toHaveBeenCalledTimes(1);
+    expect(handleFinishEditing).toHaveBeenCalledWith(expectedDuration, true);
+  });
+
+  it('matches snapshot', () => {
+    const { asFragment } = setupStartImmediatelyCase();
     expect(asFragment()).toMatchSnapshot();
   });
 });
