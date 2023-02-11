@@ -12,8 +12,8 @@ it('matches snapshot', () => {
   expect(tree).toMatchSnapshot();
 });
 
-describe('when the timer is focused', () => {
-  it('switches to editing', () => {
+describe('when editing', () => {
+  it('switches to the editing view', () => {
     render(<DurationInput duration={duration} onFinishEditing={noop} />);
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.getByRole('timer')).toBeInTheDocument();
@@ -27,24 +27,7 @@ describe('when the timer is focused', () => {
     fireEvent.focus(screen.getByRole('timer'));
     expect(asFragment()).toMatchSnapshot();
   });
-});
 
-describe('when the timer is blurred', () => {
-  it('renders', () => {
-    render(<DurationInput duration={duration} onFinishEditing={noop} />);
-    fireEvent.focus(screen.getByRole('timer'));
-    fireEvent.blur(screen.getByRole('textbox'));
-  });
-
-  xit('matches snapshot', () => {
-    const { asFragment } = render(<DurationInput duration={duration} onFinishEditing={noop} />);
-    fireEvent.focus(screen.getByRole('timer'));
-    fireEvent.blur(screen.getByRole('textbox'));
-    expect(asFragment()).toMatchSnapshot();
-  });
-});
-
-describe('when editing', () => {
   describe('when typing 4', () => {
     it('sets the timer text to 4 seconds', () => {
       render(<DurationInput duration={duration} onFinishEditing={noop} />);
@@ -53,10 +36,28 @@ describe('when editing', () => {
       expect(screen.getByRole('textbox').textContent).toBe('00h00m04s');
     });
 
-    xit('matches snapshot', () => {});
+    it('matches snapshot', () => {
+      const { asFragment } = render(<DurationInput duration={duration} onFinishEditing={noop} />);
+      fireEvent.focus(screen.getByRole('timer'));
+      fireEvent.keyDown(screen.getByRole('textbox'), { key: '4' });
+      expect(asFragment()).toMatchSnapshot();
+    });
+  });
+});
+
+describe('after editing', () => {
+  it('renders', () => {
+    render(<DurationInput duration={duration} onFinishEditing={noop} />);
+    fireEvent.focus(screen.getByRole('timer'));
+    fireEvent.blur(screen.getByRole('textbox'));
   });
 
-  xit('matches snapshot', () => {});
+  it('matches snapshot', () => {
+    const { asFragment } = render(<DurationInput duration={duration} onFinishEditing={noop} />);
+    fireEvent.focus(screen.getByRole('timer'));
+    fireEvent.blur(screen.getByRole('textbox'));
+    expect(asFragment()).toMatchSnapshot();
+  });
 });
 
 describe('padDigits', () => {

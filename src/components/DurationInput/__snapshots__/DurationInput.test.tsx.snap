@@ -1,5 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`after editing matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="DurationInput-main"
+    role="timer"
+    tabindex="0"
+  >
+    <div
+      class="DurationInput-area"
+    >
+      <span
+        class="Digit lit"
+      >
+        1
+      </span>
+      <span
+        class="Digit lit"
+      >
+        5
+      </span>
+      <span
+        class="Label minutes lit"
+      >
+        m
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Label seconds lit"
+      >
+        s
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`matches snapshot 1`] = `
 <div
   className="DurationInput-main"
@@ -46,7 +91,7 @@ exports[`matches snapshot 1`] = `
 </div>
 `;
 
-exports[`when the timer is focused matches snapshot 1`] = `
+exports[`when editing matches snapshot 1`] = `
 <DocumentFragment>
   <div
     class="DurationInput-main"
@@ -98,6 +143,66 @@ exports[`when the timer is focused matches snapshot 1`] = `
       </span>
       <span
         class="Label seconds"
+      >
+        s
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`when editing when typing 4 matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="DurationInput-main"
+    role="textbox"
+    tabindex="0"
+  >
+    <div
+      class="DurationInput-area editing"
+    >
+      <span
+        class="Digit"
+      >
+        0
+      </span>
+      <span
+        class="Digit"
+      >
+        0
+      </span>
+      <span
+        class="Label hours"
+      >
+        h
+      </span>
+      <span
+        class="Digit"
+      >
+        0
+      </span>
+      <span
+        class="Digit"
+      >
+        0
+      </span>
+      <span
+        class="Label minutes"
+      >
+        m
+      </span>
+      <span
+        class="Digit"
+      >
+        0
+      </span>
+      <span
+        class="Digit lit"
+      >
+        4
+      </span>
+      <span
+        class="Label seconds lit"
       >
         s
       </span>
