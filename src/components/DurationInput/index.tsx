@@ -4,7 +4,7 @@ import './DurationInput.css';
 
 function renderDigits(hhmmss: number[], lightLength: number | null): JSX.Element[] {
   const elements: JSX.Element[] = [];
-  const lightLen = lightLength || 9999;
+  const lightLen = lightLength ?? 9999;
   for (let i = 0; i < hhmmss.length; i++) {
     const alignedIdx = i + (6 - hhmmss.length);
     const isLit = 6 - i <= lightLen;
@@ -57,7 +57,7 @@ function trimDigits(digits: number[]): number[] {
 function padDigits(digits: number[]) : number[] {
   if (digits.length > 6) throw new Error('Expected digits to be fewer or equal to 6.');
 
-  return [ ...(new Array(6).fill(0)), ...digits ].reverse().slice(0, 6);
+  return [ ...(new Array(6).fill(0)), ...digits ].reverse().slice(0, 6).reverse();
 }
 
 type DurationInputProps = {
@@ -83,9 +83,9 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     if (wipDigits !== null) throw new Error('Expected wipDigits to be null.');
 
     // on edit, every digit is present, but unlit, like a placeholder
-    setLightLength(0);
-    setWipDigits(digitsFromDuration(duration));
     setEditing(true);
+    setWipDigits(digitsFromDuration(duration));
+    setLightLength(0);
   };
   const onBlur: React.FocusEventHandler<HTMLDivElement> = () => {
     if (!isEditing) throw new Error('Expected isEditing to be true.');
@@ -103,8 +103,10 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     // 0m10s => 10s
     // 01s => 1s
     // wow date-fns is half-baked. I gotta normalize durations myself?
-    onFinishEditing(newDuration, false);
     setEditing(false);
+    setWipDigits(null);
+    setLightLength(null);
+    onFinishEditing(newDuration, false);
   };
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (ev) => {
     if (!isEditing) throw new Error('Expected isEditing to be true.');
@@ -125,10 +127,8 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     } else if (ev.key === 'Enter') {
       ev.currentTarget.blur();
     } else if ('0' <= ev.key && ev.key <= '9') {
-      if (wipDigits.length >= 6) return;
-
       const digit = Number(ev.key);
-      console.assert(0 <= digit && digit <= 9);
+      if (0 > digit || digit > 9) throw new Error('Expected digit to be between 0 and 9 inclusive.');
 
       let initial: Array<number>;
       if (lightLength === 0) {
@@ -137,8 +137,10 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
         initial = [ ...wipDigits ]; // we're in the process of typing digits
       }
 
-      setWipDigits([ ...initial, digit ]);
-      setLightLength(lightLength + 1);
+      if (initial.length < 6) {
+        setWipDigits([ ...initial, digit ]);
+        setLightLength(lightLength + 1);
+      }
     }
   };
 
@@ -215,3 +217,4 @@ function Label({ label, isLit }: LabelProps) {
 }
 
 export default DurationInput;
+export { padDigits, trimDigits };
