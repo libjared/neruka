@@ -1,5 +1,6 @@
 import { add, intervalToDuration } from 'date-fns';
 import { useState } from 'react';
+import CountdownDisplay from '../CountdownDisplay';
 import DurationInput from '../DurationInput';
 import './Timer.css';
 
@@ -101,14 +102,6 @@ function Timer() {
       </nav>
     </div>
   );
-}
-
-type CountdownDisplayProps = {
-  time: Date
-};
-
-function CountdownDisplay(props: CountdownDisplayProps) {
-  return null;
 }
 
 export default Timer;
