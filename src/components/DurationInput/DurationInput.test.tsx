@@ -70,7 +70,7 @@ describe('initially', () => {
   });
 });
 
-describe('when editing', () => {
+describe('when focusing', () => {
   it('switches to the editing view', () => {
     setupEditingCase();
     expect(screen.getByRole('textbox')).toBeInTheDocument();
@@ -95,14 +95,14 @@ describe('when typing in a time', () => {
   });
 });
 
-describe('after editing', () => {
+describe('when blurring', () => {
   it('switches to the timer view', () => {
     setupAfterEditingCase();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.getByRole('timer')).toBeInTheDocument();
   });
 
-  it('calls the callback', () => {
+  it('calls onFinishEditing', () => {
     const { handleFinishEditing } = setupAfterEditingCase();
     const expectedDuration: Duration = { hours: 0, minutes: 4, seconds: 51 };
     expect(handleFinishEditing).toHaveBeenCalledTimes(1);

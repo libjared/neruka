@@ -1,50 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`after editing matches snapshot 1`] = `
-<DocumentFragment>
-  <div
-    class="DurationInput-main"
-    role="timer"
-    tabindex="0"
-  >
-    <div
-      class="DurationInput-area"
-    >
-      <span
-        class="Digit lit"
-      >
-        1
-      </span>
-      <span
-        class="Digit lit"
-      >
-        5
-      </span>
-      <span
-        class="Label minutes lit"
-      >
-        m
-      </span>
-      <span
-        class="Digit lit"
-      >
-        0
-      </span>
-      <span
-        class="Digit lit"
-      >
-        0
-      </span>
-      <span
-        class="Label seconds lit"
-      >
-        s
-      </span>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`initially matches snapshot 1`] = `
 <DocumentFragment>
   <div
@@ -90,7 +45,52 @@ exports[`initially matches snapshot 1`] = `
 </DocumentFragment>
 `;
 
-exports[`when editing matches snapshot 1`] = `
+exports[`when blurring matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="DurationInput-main"
+    role="timer"
+    tabindex="0"
+  >
+    <div
+      class="DurationInput-area"
+    >
+      <span
+        class="Digit lit"
+      >
+        1
+      </span>
+      <span
+        class="Digit lit"
+      >
+        5
+      </span>
+      <span
+        class="Label minutes lit"
+      >
+        m
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Label seconds lit"
+      >
+        s
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`when focusing matches snapshot 1`] = `
 <DocumentFragment>
   <div
     class="DurationInput-main"
