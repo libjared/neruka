@@ -91,11 +91,11 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     if (!isEditing) throw new Error('Expected isEditing to be true.');
     if (wipDigits === null) throw new Error('Expected wipDigits to be non-null.');
 
-    const ssmmhh = padDigits(wipDigits);
+    const hhmmss = padDigits(wipDigits);
     const newDuration: Duration = {
-      hours: ssmmhh[5] * 10 + ssmmhh[4],
-      minutes: ssmmhh[3] * 10 + ssmmhh[2],
-      seconds: ssmmhh[1] * 10 + ssmmhh[0]
+      hours: hhmmss[0] * 10 + hhmmss[1],
+      minutes: hhmmss[2] * 10 + hhmmss[3],
+      seconds: hhmmss[4] * 10 + hhmmss[5]
     };
 
     // TODO: run digits through a duration normalizer

@@ -1,18 +1,18 @@
 import { fireEvent, render, RenderResult, screen } from '@testing-library/react';
 import DurationInput, { padDigits, trimDigits } from '.';
 
-const duration: Duration = { hours: 0, minutes: 15, seconds: 0 };
-const noop = () => {};
-
 type AllowedKey = '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'|'Backspace'|'Enter';
 type SetupResult = RenderResult & {
   focusOnTimer: () => void,
   typeKey: (key: AllowedKey) => void,
   blurTextbox: () => void,
+  handleFinishEditing: jest.Mock<void, [Duration, boolean]>,
 };
 
 function setup(): SetupResult {
-  const utils: RenderResult = render(<DurationInput duration={duration} onFinishEditing={noop} />);
+  const duration: Duration = { hours: 0, minutes: 15, seconds: 0 };
+  const handleFinishEditing = jest.fn<void, [Duration, boolean]>();
+  const utils: RenderResult = render(<DurationInput duration={duration} onFinishEditing={handleFinishEditing} />);
   const focusOnTimer = () => {
     fireEvent.focus(screen.getByRole('timer'));
   };
@@ -25,6 +25,7 @@ function setup(): SetupResult {
 
   return {
     ...utils,
+    handleFinishEditing,
     focusOnTimer,
     typeKey,
     blurTextbox,
@@ -99,6 +100,13 @@ describe('after editing', () => {
     setupAfterEditingCase();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.getByRole('timer')).toBeInTheDocument();
+  });
+
+  it('calls the callback', () => {
+    const { handleFinishEditing } = setupAfterEditingCase();
+    const expectedDuration: Duration = { hours: 0, minutes: 4, seconds: 51 };
+    expect(handleFinishEditing).toHaveBeenCalledTimes(1);
+    expect(handleFinishEditing).toHaveBeenCalledWith(expectedDuration, false);
   });
 
   it('matches snapshot', () => {
