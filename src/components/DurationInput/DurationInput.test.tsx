@@ -42,24 +42,28 @@ function setupEnteredTimeCase() {
   return utils;
 }
 
-it('matches snapshot', () => {
-  const { asFragment } = render(<DurationInput duration={duration} onFinishEditing={noop} />);
-  expect(asFragment()).toMatchSnapshot();
+describe('initially', () => {
+  it('is in the timer view', () => {
+    setup();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    expect(screen.getByRole('timer')).toBeInTheDocument();
+  });
+
+  it('matches snapshot', () => {
+    const { asFragment } = setup();
+    expect(asFragment()).toMatchSnapshot();
+  });
 });
 
 describe('when editing', () => {
   it('switches to the editing view', () => {
-    const { focusOnTimer } = setup();
-    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    expect(screen.getByRole('timer')).toBeInTheDocument();
-    focusOnTimer();
+    setupEditingCase();
     expect(screen.getByRole('textbox')).toBeInTheDocument();
     expect(screen.queryByRole('timer')).not.toBeInTheDocument();
   });
 
   it('matches snapshot', () => {
-    const { asFragment } = render(<DurationInput duration={duration} onFinishEditing={noop} />);
-    fireEvent.focus(screen.getByRole('timer'));
+    const { asFragment } = setupEditingCase();
     expect(asFragment()).toMatchSnapshot();
   });
 });

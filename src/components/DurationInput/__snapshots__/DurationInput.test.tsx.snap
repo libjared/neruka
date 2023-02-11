@@ -45,7 +45,7 @@ exports[`after editing matches snapshot 1`] = `
 </DocumentFragment>
 `;
 
-exports[`matches snapshot 1`] = `
+exports[`initially matches snapshot 1`] = `
 <DocumentFragment>
   <div
     class="DurationInput-main"
