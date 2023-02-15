@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { useState } from 'react';
-import { Digit, Label } from '../Digit';
+import Digit from '../Digit';
+import Label from '../Label';
 import './DurationInput.css';
 
 function renderDigits(hhmmss: number[], lightLength: number | null): JSX.Element[] {
