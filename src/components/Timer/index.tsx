@@ -73,7 +73,7 @@ function Timer() {
   let display: JSX.Element;
   if (alarmTime !== null) {
     // running
-    display = <CountdownDisplay time={alarmTime} />;
+    display = <CountdownDisplay targetTime={alarmTime} />;
   } else {
     // paused or stopped
     let duration = currentDuration !== null ? currentDuration : originalDuration;
