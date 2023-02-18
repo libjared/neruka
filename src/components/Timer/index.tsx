@@ -74,7 +74,7 @@ function Timer() {
   let display: JSX.Element;
   if (alarmTime !== null) {
     // running
-    display = <CountdownDisplay targetTime={alarmTime} />;
+    display = <CountdownDisplay targetTime={alarmTime} onClick={() => { /* TODO startEditing */}} />;
   } else {
     // paused or stopped
     let duration = currentDuration !== null ? currentDuration : originalDuration;

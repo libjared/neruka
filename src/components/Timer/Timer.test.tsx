@@ -7,6 +7,7 @@ type SetupResult = RenderResult & {
   getTimer: () => HTMLElement,
   clickStart: () => void,
   clickStop: () => void,
+  clickCountdown: () => void,
   waitOneSecond: () => void,
 };
 
@@ -23,6 +24,9 @@ function setup(): SetupResult {
   const getTimer = () => {
     return screen.getByRole('timer');
   };
+  const clickCountdown = () => {
+    fireEvent.click(getTimer());
+  };
   const waitOneSecond = () => {
     act(() => {
       jest.advanceTimersByTime(1000);
@@ -34,6 +38,7 @@ function setup(): SetupResult {
     getTimer,
     clickStart,
     clickStop,
+    clickCountdown,
     waitOneSecond,
   };
 }
@@ -76,4 +81,10 @@ it('starts timer', () => {
 it('stops timer', () => {
   const { getTimer } = setupStoppedAfterOneSecond();
   expect(getTimer()).toHaveTextContent('14m59s');
+});
+
+xit('stops and edits when clicking on countdown', () => {
+  const { clickCountdown, getTimer } = setupStartedForOneSecond();
+  clickCountdown();
+  expect(getTimer()).toHaveTextContent('00h14m59s');
 });
