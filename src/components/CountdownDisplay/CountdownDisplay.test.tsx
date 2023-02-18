@@ -1,10 +1,10 @@
 import { act, render, RenderResult, screen } from '@testing-library/react';
-import CountdownDisplay from '.';
+import CountdownDisplay, { FriendlyDuration, toFriendlyDuration } from '.';
 
 jest.useFakeTimers();
 
 type SetupResult = RenderResult & {
-  advanceClockHalfSecond: () => void,
+  advanceClockShort: () => void,
   advanceClockOneSecond: () => void,
   expectedTextInitial: string,
   expectedTextOneSecond: string,
@@ -15,9 +15,9 @@ function setup(): SetupResult {
   jest.setSystemTime(fakeCurrentTime);
   const targetTime = new Date(2023, 1, 15, 8, 0);
   const utils: RenderResult = render(<CountdownDisplay targetTime={targetTime} />);
-  const advanceClockHalfSecond = () => {
+  const advanceClockShort = () => {
     act(() => {
-      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(199);
     });
   };
   const advanceClockOneSecond = () => {
@@ -28,16 +28,16 @@ function setup(): SetupResult {
 
   return {
     ...utils,
-    advanceClockHalfSecond,
+    advanceClockShort,
     advanceClockOneSecond,
-    expectedTextInitial: 'pretend this is a countdown from 2023-02-15T06:00:00Z to 2023-02-15T08:00:00Z',
-    expectedTextOneSecond: 'pretend this is a countdown from 2023-02-15T06:00:01Z to 2023-02-15T08:00:00Z'
+    expectedTextInitial: '2h00m00s',
+    expectedTextOneSecond: '1h59m59s'
   };
 }
 
 it('renders the correct text', () => {
   const { expectedTextInitial } = setup();
-  expect(screen.getByText(/pretend/)).toHaveTextContent(expectedTextInitial);
+  expect(screen.getByText(expectedTextInitial)).toBeInTheDocument();
 });
 
 // it('matches snapshot', () => {
@@ -45,13 +45,13 @@ it('renders the correct text', () => {
 //   expect(asFragment()).toMatchSnapshot();
 // });
 
-describe('when a half-second passes', () => {
+describe('when a short time passes', () => {
   // it('matches snapshot');
 
   it('does not change the text', () => {
-    const { advanceClockHalfSecond, expectedTextInitial } = setup();
-    advanceClockHalfSecond();
-    expect(screen.getByText(/pretend/)).toHaveTextContent(expectedTextInitial);
+    const { advanceClockShort, expectedTextInitial } = setup();
+    advanceClockShort();
+    expect(screen.getByText(expectedTextInitial)).toBeInTheDocument();
   });
 });
 
@@ -61,8 +61,11 @@ describe('when a second passes', () => {
   it('changes the text', () => {
     const { advanceClockOneSecond, expectedTextOneSecond } = setup();
     advanceClockOneSecond();
-    expect(screen.getByText(/pretend/)).toHaveTextContent(expectedTextOneSecond);
+    expect(screen.getByText(expectedTextOneSecond)).toBeInTheDocument();
   });
+
+  // it('shows a negative value for targets in the past')
+});
 
 describe('toFriendlyDuration', () => {
   it('returns 0s when nothing is passed', () => {
@@ -74,7 +77,7 @@ describe('toFriendlyDuration', () => {
   it('rejects ranges above a day', () => {
     expect(() => {
       toFriendlyDuration({ days: 1 });
-    }).toThrowError("Expected days to be undefined.");
+    }).toThrowError("Expected days to be 0 or undefined.");
   });
 
   it('rejects durations with fractional members', () => {

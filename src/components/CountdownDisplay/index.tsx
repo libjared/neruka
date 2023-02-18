@@ -1,4 +1,4 @@
-import { formatISO } from "date-fns";
+import { intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 
 function getCurrentTime(): Date {
@@ -22,9 +22,23 @@ function CountdownDisplay(props: CountdownDisplayProps) {
     };
   });
 
-  const currentDateText = formatISO(currentTime);
-  const dateText = formatISO(props.targetTime);
-  const text = `pretend this is a countdown from ${currentDateText} to ${dateText}`;
+  const duration = intervalToDuration({
+    start: currentTime,
+    end: props.targetTime
+  });
+
+  const dur = toFriendlyDuration(duration);
+
+  let str = '';
+  if (dur.hourTens !== undefined) { str += `${dur.hourTens}`; }
+  if (dur.hourOnes !== undefined) { str += `${dur.hourOnes}h`; }
+  if (dur.minuteTens !== undefined) { str += `${dur.minuteTens}`; }
+  if (dur.minuteOnes !== undefined) { str += `${dur.minuteOnes}m`; }
+  if (dur.secondTens !== undefined) { str += `${dur.secondTens}`; }
+  str += `${dur.secondOnes}s`;
+
+  const text = str;
+
   return (
     <span>
       {text}
@@ -49,10 +63,10 @@ function isWhole(num: number): boolean {
 }
 
 function toFriendlyDuration(duration: Duration): FriendlyDuration {
-  if (duration.days !== undefined) throw new Error("Expected days to be undefined.");
-  if (duration.weeks !== undefined) throw new Error("Expected weeks to be undefined.");
-  if (duration.months !== undefined) throw new Error("Expected months to be undefined.");
-  if (duration.years !== undefined) throw new Error("Expected years to be undefined.");
+  if (duration.days !== undefined && duration.days !== 0) throw new Error("Expected days to be 0 or undefined.");
+  if (duration.weeks !== undefined && duration.weeks !== 0) throw new Error("Expected weeks to be 0 or undefined.");
+  if (duration.months !== undefined && duration.months !== 0) throw new Error("Expected months to be 0 or undefined.");
+  if (duration.years !== undefined && duration.years !== 0) throw new Error("Expected years to be 0 or undefined.");
 
   if (duration.hours !== undefined && !isWhole(duration.hours)) throw new Error("Expected hours to be a whole number.");
   if (duration.minutes !== undefined && !isWhole(duration.minutes)) throw new Error("Expected minutes to be a whole number.");
