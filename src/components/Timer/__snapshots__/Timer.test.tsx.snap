@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="Timer"
+  >
+    <div
+      class="Timer-display"
+    >
+      <div
+        class="DurationInput-main"
+        role="timer"
+        tabindex="0"
+      >
+        <div
+          class="DurationInput-area"
+        >
+          <span
+            class="Digit lit"
+          >
+            1
+          </span>
+          <span
+            class="Digit lit"
+          >
+            5
+          </span>
+          <span
+            class="Label minutes lit"
+          >
+            m
+          </span>
+          <span
+            class="Digit lit"
+          >
+            0
+          </span>
+          <span
+            class="Digit lit"
+          >
+            0
+          </span>
+          <span
+            class="Label seconds lit"
+          >
+            s
+          </span>
+        </div>
+      </div>
+    </div>
+    <nav
+      class="Timer-controls"
+    >
+      <input
+        type="button"
+        value="Start"
+      />
+      <input
+        type="button"
+        value="Reset"
+      />
+    </nav>
+  </div>
+</DocumentFragment>
+`;

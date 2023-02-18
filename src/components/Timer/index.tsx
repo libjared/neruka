@@ -62,6 +62,7 @@ function Timer() {
     };
     const targetDuration = intervalToDuration(interval);
     setCurrentDuration(targetDuration);
+    setAlarmTime(null);
   };
 
   const resetTimer = (): void => {

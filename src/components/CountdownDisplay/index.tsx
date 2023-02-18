@@ -6,7 +6,7 @@ function getCurrentTime(): Date {
 }
 
 type CountdownDisplayProps = {
-  targetTime: Date // TODO rename
+  targetTime: Date
 };
 
 function CountdownDisplay(props: CountdownDisplayProps) {
