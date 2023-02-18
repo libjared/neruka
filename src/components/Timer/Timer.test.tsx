@@ -4,6 +4,7 @@ import Timer from '.';
 jest.useFakeTimers();
 
 type SetupResult = RenderResult & {
+  getTimer: () => HTMLElement,
   clickStart: () => void,
   clickStop: () => void,
   waitOneSecond: () => void,
@@ -19,6 +20,9 @@ function setup(): SetupResult {
   const clickStop = () => {
     fireEvent.click(screen.getByDisplayValue('Stop'));
   };
+  const getTimer = () => {
+    return screen.getByRole('timer');
+  };
   const waitOneSecond = () => {
     act(() => {
       jest.advanceTimersByTime(1000);
@@ -27,39 +31,49 @@ function setup(): SetupResult {
 
   return {
     ...utils,
+    getTimer,
     clickStart,
     clickStop,
     waitOneSecond,
   };
 }
 
-test('renders', () => {
+function setupStartedForOneSecond(): SetupResult {
+  const utils = setup();
+  utils.clickStart();
+  utils.waitOneSecond();
+  return utils;
+}
+
+function setupStoppedAfterOneSecond(): SetupResult {
+  const utils = setup();
+  utils.clickStart();
+  utils.waitOneSecond();
+  utils.clickStop();
+  utils.waitOneSecond();
+  return utils;
+}
+
+it('renders', () => {
   setup();
 });
 
-test('displays 15m00s', () => {
-  const { baseElement } = setup();
-  expect(baseElement).toHaveTextContent('15m00s');
+it('displays 15m00s', () => {
+  const { getTimer } = setup();
+  expect(getTimer()).toHaveTextContent('15m00s');
 });
 
-test('matches snapshot', () => {
+it('matches snapshot', () => {
   const { asFragment } = setup();
   expect(asFragment()).toMatchSnapshot();
 });
 
-test('starts timer', () => {
-  const { clickStart, waitOneSecond, baseElement } = setup();
-  clickStart();
-  waitOneSecond();
-  expect(baseElement).toHaveTextContent('14m59s');
+it('starts timer', () => {
+  const { getTimer } = setupStartedForOneSecond();
+  expect(getTimer()).toHaveTextContent('14m59s');
 });
 
-test('stops timer', () => {
-  const { clickStart, waitOneSecond, clickStop, baseElement } = setup();
-  clickStart();
-  waitOneSecond();
-  clickStop();
-  waitOneSecond();
-  waitOneSecond();
-  expect(baseElement).toHaveTextContent('14m59s');
+it('stops timer', () => {
+  const { getTimer } = setupStoppedAfterOneSecond();
+  expect(getTimer()).toHaveTextContent('14m59s');
 });
