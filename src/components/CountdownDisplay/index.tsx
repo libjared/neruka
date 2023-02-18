@@ -40,7 +40,7 @@ function CountdownDisplay(props: CountdownDisplayProps) {
   const text = str;
 
   return (
-    <span>
+    <span role="timer">
       {text}
     </span>
   );

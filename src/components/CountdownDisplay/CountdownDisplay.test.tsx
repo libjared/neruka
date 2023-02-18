@@ -40,13 +40,17 @@ it('renders the correct text', () => {
   expect(screen.getByText(expectedTextInitial)).toBeInTheDocument();
 });
 
-// it('matches snapshot', () => {
-//   const { asFragment } = setup();
-//   expect(asFragment()).toMatchSnapshot();
-// });
+it('matches snapshot', () => {
+  const { asFragment } = setup();
+  expect(asFragment()).toMatchSnapshot();
+});
 
 describe('when a short time passes', () => {
-  // it('matches snapshot');
+  it('matches snapshot', () => {
+    const { asFragment, advanceClockShort } = setup();
+    advanceClockShort();
+    expect(asFragment()).toMatchSnapshot();
+  });
 
   it('does not change the text', () => {
     const { advanceClockShort, expectedTextInitial } = setup();
@@ -56,7 +60,11 @@ describe('when a short time passes', () => {
 });
 
 describe('when a second passes', () => {
-  // it('matches snapshot');
+  it('matches snapshot', () => {
+    const { asFragment, advanceClockOneSecond } = setup();
+    advanceClockOneSecond();
+    expect(asFragment()).toMatchSnapshot();
+  });
 
   it('changes the text', () => {
     const { advanceClockOneSecond, expectedTextOneSecond } = setup();

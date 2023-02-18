@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <span
+    role="timer"
+  >
+    2h00m00s
+  </span>
+</DocumentFragment>
+`;
+
+exports[`when a second passes matches snapshot 1`] = `
+<DocumentFragment>
+  <span
+    role="timer"
+  >
+    1h59m59s
+  </span>
+</DocumentFragment>
+`;
+
+exports[`when a short time passes matches snapshot 1`] = `
+<DocumentFragment>
+  <span
+    role="timer"
+  >
+    2h00m00s
+  </span>
+</DocumentFragment>
+`;
