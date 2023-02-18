@@ -63,4 +63,47 @@ describe('when a second passes', () => {
     advanceClockOneSecond();
     expect(screen.getByText(/pretend/)).toHaveTextContent(expectedTextOneSecond);
   });
+
+describe('toFriendlyDuration', () => {
+  it('returns 0s when nothing is passed', () => {
+    expect(toFriendlyDuration({})).toEqual<FriendlyDuration>({
+      secondOnes: '0',
+    });
+  });
+
+  it('rejects ranges above a day', () => {
+    expect(() => {
+      toFriendlyDuration({ days: 1 });
+    }).toThrowError("Expected days to be undefined.");
+  });
+
+  it('rejects durations with fractional members', () => {
+    expect(() => {
+      toFriendlyDuration({ hours: 0.5, minutes: 13 });
+    }).toThrowError("Expected hours to be a whole number.");
+  });
+
+  it('rejects durations with negative members', () => {
+    expect(() => {
+      toFriendlyDuration({ hours: 1, minutes: -13 });
+    }).toThrowError("Expected minutes to be a whole number.");
+  });
+
+  it('returns 15s', () => {
+    expect(toFriendlyDuration({ hours: 0, minutes: 0, seconds: 15 })).toEqual<FriendlyDuration>({
+      secondTens: '1',
+      secondOnes: '5',
+    });
+  });
+
+  it('returns 80h05m40s', () => {
+    expect(toFriendlyDuration({ hours: 80, minutes: 5, seconds: 40 })).toEqual<FriendlyDuration>({
+      hourTens: '8',
+      hourOnes: '0',
+      minuteTens: '0',
+      minuteOnes: '5',
+      secondTens: '4',
+      secondOnes: '0',
+    });
+  });
 });
