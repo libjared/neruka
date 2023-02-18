@@ -1,4 +1,4 @@
-import { act, render, RenderResult, screen } from '@testing-library/react';
+import { act, fireEvent, render, RenderResult, screen } from '@testing-library/react';
 import CountdownDisplay, { FriendlyDuration, toFriendlyDuration } from '.';
 
 jest.useFakeTimers();
@@ -6,6 +6,8 @@ jest.useFakeTimers();
 type SetupResult = RenderResult & {
   advanceClockShort: () => void,
   advanceClockOneSecond: () => void,
+  click: () => void,
+  handleClick: jest.Mock<void, void[]>,
   expectedTextInitial: string,
   expectedTextOneSecond: string,
 };
@@ -14,7 +16,8 @@ function setup(): SetupResult {
   const fakeCurrentTime = new Date(2023, 1, 15, 6, 0);
   jest.setSystemTime(fakeCurrentTime);
   const targetTime = new Date(2023, 1, 15, 8, 0);
-  const utils: RenderResult = render(<CountdownDisplay targetTime={targetTime} />);
+  const handleClick = jest.fn<void, void[]>();
+  const utils: RenderResult = render(<CountdownDisplay targetTime={targetTime} onClick={handleClick} />);
   const advanceClockShort = () => {
     act(() => {
       jest.advanceTimersByTime(199);
@@ -25,19 +28,31 @@ function setup(): SetupResult {
       jest.advanceTimersByTime(1000);
     });
   };
+  const click = () => {
+    fireEvent.click(screen.getByRole('timer'));
+  };
 
   return {
     ...utils,
     advanceClockShort,
     advanceClockOneSecond,
+    click,
+    handleClick,
     expectedTextInitial: '2h00m00s',
-    expectedTextOneSecond: '1h59m59s'
+    expectedTextOneSecond: '1h59m59s',
   };
 }
 
 it('renders the correct text', () => {
   const { expectedTextInitial } = setup();
   expect(screen.getByText(expectedTextInitial)).toBeInTheDocument();
+});
+
+it('calls handleClick when clicked', () => {
+  const { click, handleClick } = setup();
+  expect(handleClick).toBeCalledTimes(0);
+  click();
+  expect(handleClick).toBeCalledTimes(1);
 });
 
 it('matches snapshot', () => {

@@ -6,10 +6,11 @@ function getCurrentTime(): Date {
 }
 
 type CountdownDisplayProps = {
-  targetTime: Date
+  targetTime: Date,
+  onClick: () => void,
 };
 
-function CountdownDisplay(props: CountdownDisplayProps) {
+function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
   const [ currentTime, setCurrentTime ] = useState<Date>(getCurrentTime());
 
   useEffect(() => {
@@ -22,9 +23,13 @@ function CountdownDisplay(props: CountdownDisplayProps) {
     };
   });
 
+  const handleClick = () => {
+    onClick();
+  };
+
   const duration = intervalToDuration({
     start: currentTime,
-    end: props.targetTime
+    end: targetTime
   });
 
   const dur = toFriendlyDuration(duration);
@@ -40,7 +45,7 @@ function CountdownDisplay(props: CountdownDisplayProps) {
   const text = str;
 
   return (
-    <span role="timer">
+    <span role="timer" onClick={handleClick}>
       {text}
     </span>
   );
