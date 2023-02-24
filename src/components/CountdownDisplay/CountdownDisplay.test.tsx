@@ -5,6 +5,7 @@ jest.useFakeTimers();
 
 type SetupResult = RenderResult & {
   advanceClockShort: () => void,
+  advanceClockHalfSecond: () => void,
   advanceClockOneSecond: () => void,
   click: () => void,
   handleClick: jest.Mock<void, void[]>,
@@ -23,6 +24,11 @@ function setup(): SetupResult {
       jest.advanceTimersByTime(199);
     });
   };
+  const advanceClockHalfSecond = () => {
+    act(() => {
+      jest.advanceTimersByTime(500);
+    });
+  };
   const advanceClockOneSecond = () => {
     act(() => {
       jest.advanceTimersByTime(1000);
@@ -35,6 +41,7 @@ function setup(): SetupResult {
   return {
     ...utils,
     advanceClockShort,
+    advanceClockHalfSecond,
     advanceClockOneSecond,
     click,
     handleClick,
@@ -70,6 +77,14 @@ describe('when a short time passes', () => {
   it('does not change the text', () => {
     const { advanceClockShort, expectedTextInitial } = setup();
     advanceClockShort();
+    expect(screen.getByText(expectedTextInitial)).toBeInTheDocument();
+  });
+});
+
+describe('when a half-second passes', () => {
+  it('does not change the text because it rounds up', () => {
+    const { advanceClockHalfSecond, expectedTextInitial } = setup();
+    advanceClockHalfSecond();
     expect(screen.getByText(expectedTextInitial)).toBeInTheDocument();
   });
 });

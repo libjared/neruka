@@ -27,7 +27,7 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
     onClick();
   };
 
-  const duration = intervalToDuration({
+  const duration = intervalToDurationCeiling({
     start: currentTime,
     end: targetTime
   });
