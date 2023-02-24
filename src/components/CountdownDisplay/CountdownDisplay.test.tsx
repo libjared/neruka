@@ -1,5 +1,5 @@
 import { act, fireEvent, render, RenderResult, screen } from '@testing-library/react';
-import CountdownDisplay, { FriendlyDuration, intervalToPreciseDuration, toFriendlyDuration } from '.';
+import CountdownDisplay, { FriendlyDuration, intervalToDurationCeiling, intervalToPreciseDuration, toFriendlyDuration } from '.';
 
 jest.useFakeTimers();
 
@@ -149,5 +149,23 @@ describe('intervalToPreciseDuration', () => {
       end: new Date(1677208120153),
     });
     expect(result).toEqual({ years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20, milliseconds: 105 });
+  });
+});
+
+describe('intervalToDurationCeiling', () => {
+  it('rounds up', () => {
+    const result = intervalToDurationCeiling({
+      start: new Date(1677104120048),
+      end: new Date(1677208120153),
+    });
+    expect(result).toEqual({ years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 21 });
+  });
+
+  it('doesnt round when the difference is exact', () => {
+    const result = intervalToDurationCeiling({
+      start: new Date(1677104120048),
+      end: new Date(1677208120153-105),
+    });
+    expect(result).toEqual({ years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20 });
   });
 });

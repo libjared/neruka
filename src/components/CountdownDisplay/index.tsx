@@ -1,4 +1,4 @@
-import { add, differenceInMilliseconds, intervalToDuration } from "date-fns";
+import { add, differenceInMilliseconds, intervalToDuration, toDate } from "date-fns";
 import { useEffect, useState } from "react";
 
 function getCurrentTime(): Date {
@@ -124,7 +124,21 @@ function intervalToPreciseDuration(interval: Interval): PreciseDuration {
   };
 }
 
+function intervalToDurationCeiling(interval: Interval): Duration {
+  const start = toDate(interval.start);
+  const end = toDate(interval.end);
+  const startFrac = start.getTime() % 1000;
+  const endFrac = end.getTime() % 1000;
+
+  let fixedEnd = end;
+  if (startFrac !== endFrac) {
+    // the difference is inexact; round up.
+    fixedEnd = add(fixedEnd, { seconds: 1 });
+  }
+  return intervalToDuration({ start, end: fixedEnd });
+}
+
 export default CountdownDisplay;
-export { toFriendlyDuration, intervalToPreciseDuration };
+export { toFriendlyDuration, intervalToPreciseDuration, intervalToDurationCeiling };
 
 export type { FriendlyDuration };
