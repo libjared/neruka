@@ -1,5 +1,5 @@
 import { act, fireEvent, render, RenderResult, screen } from '@testing-library/react';
-import CountdownDisplay, { FriendlyDuration, toFriendlyDuration } from '.';
+import CountdownDisplay, { FriendlyDuration, intervalToPreciseDuration, toFriendlyDuration } from '.';
 
 jest.useFakeTimers();
 
@@ -131,5 +131,23 @@ describe('toFriendlyDuration', () => {
       secondTens: '4',
       secondOnes: '0',
     });
+  });
+});
+
+describe('intervalToPreciseDuration', () => {
+  it('works A', () => {
+    const result = intervalToPreciseDuration({
+      start: new Date(1677208120048),
+      end: new Date(1677208120053),
+    });
+    expect(result).toEqual({ years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, milliseconds: 5 });
+  });
+
+  it('works B', () => {
+    const result = intervalToPreciseDuration({
+      start: new Date(1677104120048),
+      end: new Date(1677208120153),
+    });
+    expect(result).toEqual({ years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20, milliseconds: 105 });
   });
 });

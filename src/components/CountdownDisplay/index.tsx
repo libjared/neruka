@@ -1,4 +1,4 @@
-import { intervalToDuration } from "date-fns";
+import { add, differenceInMilliseconds, intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 
 function getCurrentTime(): Date {
@@ -110,7 +110,21 @@ function toFriendlyDuration(duration: Duration): FriendlyDuration {
   return friendly;
 }
 
+type PreciseDuration = Duration & {
+  milliseconds?: number
+};
+
+function intervalToPreciseDuration(interval: Interval): PreciseDuration {
+  const looseDifference = intervalToDuration(interval);
+  const remainingMilliseconds = add(interval.start, { ...looseDifference });
+  const milliseconds = differenceInMilliseconds(interval.end, remainingMilliseconds);
+  return {
+    ...looseDifference,
+    milliseconds,
+  };
+}
+
 export default CountdownDisplay;
-export { toFriendlyDuration };
+export { toFriendlyDuration, intervalToPreciseDuration };
 
 export type { FriendlyDuration };
