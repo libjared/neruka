@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Digit from '../Digit';
 import Label from '../Label';
 import './DurationInput.css';
@@ -64,10 +64,15 @@ function padDigits(digits: number[]) : number[] {
 
 type DurationInputProps = {
   duration: Duration,
-  onFinishEditing: (newDuration: Duration, immediatelyStart: boolean) => void
+  onFinishEditing: (newDuration: Duration, immediatelyStart: boolean) => void,
+  initialEditing: boolean,
 };
 
-function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
+function DurationInput({ duration, initialEditing, onFinishEditing }: DurationInputProps) {
+  // state initializer pattern; don't listen to any changes in this prop
+  const { current: initialProps } = useRef({ initialEditing });
+  const [ didForceFocus, setDidForceFocus ] = useState<boolean>(false);
+
   const [ isEditing, setEditing ] = useState<boolean>(false);
 
   // hhmmss, right-aligned, length is [0,6], no left-padding with zeroes.
@@ -80,7 +85,7 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
   // only valid when isEditing true, otherwise null.
   const [ lightLength, setLightLength ] = useState<number | null>(null);
 
-  const onFocus: React.FocusEventHandler<HTMLDivElement> = () => {
+  const startEditing = useCallback(() => {
     if (isEditing) throw new Error('Expected isEditing to be false.');
     if (wipDigits !== null) throw new Error('Expected wipDigits to be null.');
 
@@ -88,7 +93,7 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     setEditing(true);
     setWipDigits(digitsFromDuration(duration));
     setLightLength(0);
-  };
+  }, [duration, isEditing, wipDigits]);
 
   const saveAndQuit = (startImmediately: boolean) => {
     if (!isEditing) throw new Error('Expected isEditing to be true.');
@@ -110,6 +115,21 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
     setWipDigits(null);
     setLightLength(null);
     onFinishEditing(newDuration, startImmediately);
+  };
+
+  const focusOnMeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialProps.initialEditing && !didForceFocus && focusOnMeRef.current !== null) {
+      // we start the component's life in the editing view.
+      // ws trigger that behavior by forcing focus on the div.
+      setDidForceFocus(true);
+      focusOnMeRef.current.focus();
+    }
+  }, [didForceFocus, initialProps.initialEditing]);
+
+  const onFocus: React.FocusEventHandler<HTMLDivElement> = () => {
+    startEditing();
   };
 
   const onBlur: React.FocusEventHandler<HTMLDivElement> = () => {
@@ -178,6 +198,7 @@ function DurationInput({ duration, onFinishEditing }: DurationInputProps) {
   return (
     <div
       className="DurationInput-main"
+      ref={focusOnMeRef}
       onFocus={onFocus}
       onBlur={onBlur}
       onKeyDown={onKeyDown}

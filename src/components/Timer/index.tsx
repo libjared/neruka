@@ -44,6 +44,10 @@ function Timer() {
   // when the timer is running, calculate the time remaining from this.
   // when the timer is paused, it's null.
   const [ alarmTime, setAlarmTime ] = useState<Date | null>(null);
+  // when the timer is stopped, it's null.
+  // when the timer is running, it's null.
+  // when the timer is paused, it determines whether to show the duration editing view, and force focus on it.
+  const [ initialEditing, setInitialEditing ] = useState<boolean | null>(null);
 
   const startTimer = (): void => {
     // we are stopped or paused.
@@ -71,14 +75,21 @@ function Timer() {
     setAlarmTime(null);
   };
 
+  const stopAndEditTimer = () => {
+    // we are running.
+    stopTimer();
+    setInitialEditing(true);
+  };
+
   let display: JSX.Element;
   if (alarmTime !== null) {
     // running
-    display = <CountdownDisplay targetTime={alarmTime} onClick={() => { /* TODO startEditing */}} />;
+    display = <CountdownDisplay targetTime={alarmTime} onClick={stopAndEditTimer} />;
   } else {
     // paused or stopped
     let duration = currentDuration !== null ? currentDuration : originalDuration;
     const onFinishEditing = (newDuration: Duration, immediatelyStart: boolean): void => {
+      setInitialEditing(false);
       setOriginalDuration(newDuration);
       setCurrentDuration(null);
       if (immediatelyStart) {
@@ -88,7 +99,7 @@ function Timer() {
         setAlarmTime(targetTime);
       }
     };
-    display = <DurationInput duration={duration} onFinishEditing={onFinishEditing} />;
+    display = <DurationInput duration={duration} initialEditing={!!initialEditing} onFinishEditing={onFinishEditing} />;
   }
 
   return (

@@ -11,10 +11,12 @@ A web-based alarm app that audibly announces time remaining every so often, incr
 ## Roadmap to Release
 
 - [x] Fix stop button
+- [x] Click on countdown to stop and edit (requires state pullup)
+- [ ] Fix toHaveTextContent
 - [ ] Ceiling countdown
 - [ ] Display countups
 - [ ] Announce milestones
-- [ ] Click on countdown to stop and edit (requires state pullup)
+- [ ] Experiment with custom hooks
 - [ ] Experiment with reducers
 - [ ] Style hms labels
 - [ ] Progress bar

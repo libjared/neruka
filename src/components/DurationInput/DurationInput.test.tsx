@@ -2,6 +2,9 @@ import { fireEvent, render, RenderResult, screen } from '@testing-library/react'
 import DurationInput, { padDigits, trimDigits } from '.';
 
 type AllowedKey = '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'|'Backspace'|'Enter';
+type SetupArgs = {
+  initialEditing?: boolean,
+};
 type SetupResult = RenderResult & {
   focusOnTimer: () => void,
   typeKey: (key: AllowedKey) => void,
@@ -9,10 +12,20 @@ type SetupResult = RenderResult & {
   handleFinishEditing: jest.Mock<void, [Duration, boolean]>,
 };
 
-function setup(): SetupResult {
+function setup(args?: SetupArgs): SetupResult {
+  let initialEditing = false;
+  if (args !== undefined && args.initialEditing !== undefined) {
+    initialEditing = args.initialEditing;
+  }
   const duration: Duration = { hours: 0, minutes: 15, seconds: 0 };
   const handleFinishEditing = jest.fn<void, [Duration, boolean]>();
-  const utils: RenderResult = render(<DurationInput duration={duration} onFinishEditing={handleFinishEditing} />);
+  const utils: RenderResult = render(
+    <DurationInput
+      duration={duration}
+      initialEditing={initialEditing}
+      onFinishEditing={handleFinishEditing}
+    />
+  );
   const focusOnTimer = () => {
     fireEvent.focus(screen.getByRole('timer'));
   };
@@ -67,6 +80,11 @@ function setupStartImmediatelyCase() {
   return utils;
 }
 
+function setupInitialEditingCase() {
+  const utils = setup({ initialEditing: true });
+  return utils;
+}
+
 describe('initially', () => {
   it('is in the timer view', () => {
     setup();
@@ -77,6 +95,19 @@ describe('initially', () => {
   it('matches snapshot', () => {
     const { asFragment } = setup();
     expect(asFragment()).toMatchSnapshot();
+  });
+});
+
+describe('when initialEditing is true', () => {
+  it('is in the editing view', () => {
+    setupInitialEditingCase();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.queryByRole('timer')).not.toBeInTheDocument();
+  });
+
+  it('forces focus', () => {
+    setupInitialEditingCase();
+    expect(screen.getByRole('textbox')).toHaveFocus();
   });
 });
 
