@@ -7,10 +7,12 @@ type SetupResult = RenderResult & {
   advanceClockShort: () => void,
   advanceClockHalfSecond: () => void,
   advanceClockOneSecond: () => void,
+  advanceClock505PastTarget: () => void,
   click: () => void,
   handleClick: jest.Mock<void, void[]>,
   expectedTextInitial: string,
   expectedTextOneSecond: string,
+  expectedText505PastTarget: string,
 };
 
 function setup(): SetupResult {
@@ -34,6 +36,11 @@ function setup(): SetupResult {
       jest.advanceTimersByTime(1000);
     });
   };
+  const advanceClock505PastTarget = () => {
+    act(() => {
+      jest.advanceTimersByTime((((2 * 60 + 5) * 60) + 5) * 1000);
+    });
+  };
   const click = () => {
     fireEvent.click(screen.getByRole('timer'));
   };
@@ -43,10 +50,12 @@ function setup(): SetupResult {
     advanceClockShort,
     advanceClockHalfSecond,
     advanceClockOneSecond,
+    advanceClock505PastTarget,
     click,
     handleClick,
     expectedTextInitial: '2h00m00s',
     expectedTextOneSecond: '1h59m59s',
+    expectedText505PastTarget: '-5m05s',
   };
 }
 
@@ -101,8 +110,14 @@ describe('when a second passes', () => {
     advanceClockOneSecond();
     expect(screen.getByText(expectedTextOneSecond)).toBeInTheDocument();
   });
+});
 
-  // it('shows a negative value for targets in the past')
+describe('when the target time has passed', () => {
+  it('shows a negative', () => {
+    const { advanceClock505PastTarget, expectedText505PastTarget } = setup();
+    advanceClock505PastTarget();
+    expect(screen.getByText(expectedText505PastTarget)).toBeInTheDocument();
+  });
 });
 
 describe('toFriendlyDuration', () => {

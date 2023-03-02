@@ -35,6 +35,7 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
   const dur = toFriendlyDuration(duration);
 
   let str = '';
+  if (dur.negative) { str += '-'; }
   if (dur.hourTens !== undefined) { str += `${dur.hourTens}`; }
   if (dur.hourOnes !== undefined) { str += `${dur.hourOnes}h`; }
   if (dur.minuteTens !== undefined) { str += `${dur.minuteTens}`; }
