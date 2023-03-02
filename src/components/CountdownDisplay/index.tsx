@@ -144,10 +144,11 @@ function intervalToDurationCeiling(interval: Interval): SignedDuration {
   // |   1.000 |     -1s |
   // |   1.001 |     -1s |
 
-  // round up, by pushing the end into the future by 1 second.
+  // round up, by pushing the end into the future by 1 second only when 1. the difference is
+  // inexact, and 2. when we're still before the target (because intervalToDuration() calls abs())
   const shouldRoundUp = (
-    startTime % 1000 !== endTime % 1000 && // only when the difference is inexact
-    endTime > startTime // only round when we're still before the target (because intervalToDuration() calls abs())
+    startTime % 1000 !== endTime % 1000 &&
+    endTime > startTime
   );
   const fixedEnd = add(end, { seconds: shouldRoundUp ? 1 : 0 });
 

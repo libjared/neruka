@@ -215,9 +215,33 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: true, years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20 });
   });
 
-  // TODO: function whenXAfterExpectYSeconds() {}
+  function testRounding(_descriptionExpected: string, _descriptionGiven: string, msBefore: number, expectedSeconds: number) {
+    const descriptionExpected = `${expectedSeconds}s`;
+    const descriptionGiven = `${(msBefore / -1000.0).toFixed(3)}s`;
+    it(`returns ${descriptionExpected} when ${descriptionGiven} after`, () => {
+      expect(descriptionExpected).toBe(_descriptionExpected);
+      expect(descriptionGiven).toBe(_descriptionGiven);
+      const result = intervalToDurationCeiling({
+        start: new Date(base),
+        end: new Date(base + msBefore),
+      });
+      expect(result).toEqual({ negative: expectedSeconds < 0, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: Math.abs(expectedSeconds) });
+    });
+  }
 
-  it('returns 2s when 1.001s before', () => {
+  describe('returns correctly-rounded durations at precise moments', () => {
+    testRounding( '2s', '-1.001s',  1001,  2);
+    testRounding( '1s', '-1.000s',  1000,  1);
+    testRounding( '1s', '-0.999s',   999,  1);
+    testRounding( '1s', '-0.001s',     1,  1);
+    testRounding( '0s',  '0.000s',     0,  0);
+    testRounding( '0s',  '0.001s', -   1,  0);
+    testRounding( '0s',  '0.999s', - 999,  0);
+    testRounding('-1s',  '1.000s', -1000, -1);
+    testRounding('-1s',  '1.001s', -1001, -1);
+  });
+
+  it('returns 2s when -1.001s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base + 1001),
@@ -225,7 +249,7 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 2 });
   });
 
-  it('returns 1s when 1.000s before', () => {
+  it('returns 1s when -1.000s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base + 1000),
@@ -233,7 +257,7 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
   });
 
-  it('returns 1s when 0.999s before', () => {
+  it('returns 1s when -0.999s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base + 999),
@@ -241,7 +265,7 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
   });
 
-  it('returns 1s when 0.001s before', () => {
+  it('returns 1s when -0.001s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base + 1),
