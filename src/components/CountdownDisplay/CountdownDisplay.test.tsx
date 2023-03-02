@@ -255,7 +255,7 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: true, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
   });
 
-  xit('doesnt return -0s', () => {
+  it('doesnt return -0s', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base - 1063),

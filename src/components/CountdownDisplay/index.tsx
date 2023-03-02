@@ -1,4 +1,4 @@
-import { add, compareAsc, intervalToDuration, toDate } from "date-fns";
+import { add, intervalToDuration, toDate } from "date-fns";
 import { useEffect, useState } from "react";
 
 function getCurrentTime(): Date {
@@ -139,10 +139,11 @@ function intervalToDurationCeiling(interval: Interval): SignedDuration {
   }
 
   const unsignedDuration = intervalToDuration({ start, end: fixedEnd });
+  const showNegative = fixedEnd.getTime() - start.getTime() <= -1000;
 
   return {
     ...unsignedDuration,
-    negative: compareAsc(fixedEnd, start) === -1,
+    negative: showNegative,
   };
 }
 
