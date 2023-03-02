@@ -107,44 +107,55 @@ describe('when a second passes', () => {
 
 describe('toFriendlyDuration', () => {
   it('returns 0s when nothing is passed', () => {
-    expect(toFriendlyDuration({})).toEqual<FriendlyDuration>({
+    expect(toFriendlyDuration({ negative: false })).toEqual<FriendlyDuration>({
+      negative: false,
       secondOnes: '0',
     });
   });
 
   it('rejects ranges above a day', () => {
     expect(() => {
-      toFriendlyDuration({ days: 1 });
+      toFriendlyDuration({ negative: false, days: 1 });
     }).toThrowError("Expected days to be 0 or undefined.");
   });
 
   it('rejects durations with fractional members', () => {
     expect(() => {
-      toFriendlyDuration({ hours: 0.5, minutes: 13 });
+      toFriendlyDuration({ negative: false, hours: 0.5, minutes: 13 });
     }).toThrowError("Expected hours to be a whole number.");
   });
 
   it('rejects durations with negative members', () => {
     expect(() => {
-      toFriendlyDuration({ hours: 1, minutes: -13 });
+      toFriendlyDuration({ negative: false, hours: 1, minutes: -13 });
     }).toThrowError("Expected minutes to be a whole number.");
   });
 
   it('returns 15s', () => {
-    expect(toFriendlyDuration({ hours: 0, minutes: 0, seconds: 15 })).toEqual<FriendlyDuration>({
+    expect(toFriendlyDuration({ negative: false, hours: 0, minutes: 0, seconds: 15 })).toEqual<FriendlyDuration>({
+      negative: false,
       secondTens: '1',
       secondOnes: '5',
     });
   });
 
   it('returns 80h05m40s', () => {
-    expect(toFriendlyDuration({ hours: 80, minutes: 5, seconds: 40 })).toEqual<FriendlyDuration>({
+    expect(toFriendlyDuration({ negative: false, hours: 80, minutes: 5, seconds: 40 })).toEqual<FriendlyDuration>({
+      negative: false,
       hourTens: '8',
       hourOnes: '0',
       minuteTens: '0',
       minuteOnes: '5',
       secondTens: '4',
       secondOnes: '0',
+    });
+  });
+
+  it('returns -15s', () => {
+    expect(toFriendlyDuration({ negative: true, hours: 0, minutes: 0, seconds: 15 })).toEqual<FriendlyDuration>({
+      negative: true,
+      secondTens: '1',
+      secondOnes: '5',
     });
   });
 });

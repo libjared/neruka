@@ -54,6 +54,7 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
 type BaseTenDigit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 
 type FriendlyDuration = {
+  negative: boolean,
   hourTens?: BaseTenDigit,
   hourOnes?: BaseTenDigit,
   minuteTens?: BaseTenDigit,
@@ -67,7 +68,7 @@ function isWhole(num: number): boolean {
   return Number.isInteger(num) && num >= 0;
 }
 
-function toFriendlyDuration(duration: Duration): FriendlyDuration {
+function toFriendlyDuration(duration: SignedDuration): FriendlyDuration {
   if (duration.days !== undefined && duration.days !== 0) throw new Error("Expected days to be 0 or undefined.");
   if (duration.weeks !== undefined && duration.weeks !== 0) throw new Error("Expected weeks to be 0 or undefined.");
   if (duration.months !== undefined && duration.months !== 0) throw new Error("Expected months to be 0 or undefined.");
@@ -94,6 +95,7 @@ function toFriendlyDuration(duration: Duration): FriendlyDuration {
   digits[5] = asBaseTenDigit(((duration.seconds || 0) % 10).toString());
 
   const friendly: FriendlyDuration = {
+    negative: duration.negative,
     hourTens: digits[0],
     hourOnes: digits[1],
     minuteTens: digits[2],
