@@ -79,6 +79,15 @@ function toFriendlyDuration(duration: SignedDuration): FriendlyDuration {
   if (duration.minutes !== undefined && !isWhole(duration.minutes)) throw new Error("Expected minutes to be a whole number.");
   if (duration.seconds !== undefined && !isWhole(duration.seconds)) throw new Error("Expected seconds to be a whole number.");
 
+  if (
+    (duration.hours === undefined || duration.hours === 0) &&
+    (duration.minutes === undefined || duration.minutes === 0) &&
+    (duration.seconds === undefined || duration.seconds === 0) &&
+    duration.negative
+  ) {
+    throw new Error("Expected duration not to be negative 0.");
+  }
+
   const digits: BaseTenDigit[] = new Array(6).fill('0');
 
   const asBaseTenDigit = (digit: string) => {
@@ -133,7 +142,7 @@ function intervalToDurationCeiling(interval: Interval): SignedDuration {
 
   return {
     ...unsignedDuration,
-    negative: compareAsc(end, start) === -1,
+    negative: compareAsc(fixedEnd, start) === -1,
   };
 }
 
