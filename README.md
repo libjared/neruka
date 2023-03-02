@@ -14,7 +14,7 @@ A web-based alarm app that audibly announces time remaining every so often, incr
 - [x] Click on countdown to stop and edit (requires state pullup)
 - [x] Fix toHaveTextContent
 - [x] Ceiling countdown
-- [ ] Display countups
+- [x] Display countups
 - [ ] Announce milestones
 - [ ] Experiment with custom hooks
 - [ ] Experiment with reducers

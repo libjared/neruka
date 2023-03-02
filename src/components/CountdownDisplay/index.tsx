@@ -129,17 +129,30 @@ type SignedDuration = Duration & {
 function intervalToDurationCeiling(interval: Interval): SignedDuration {
   const start = toDate(interval.start);
   const end = toDate(interval.end);
-  const startFrac = start.getTime() % 1000;
-  const endFrac = end.getTime() % 1000;
+  const startTime = start.getTime();
+  const endTime = end.getTime();
 
-  let fixedEnd = end;
-  if (startFrac !== endFrac) {
-    // the difference is inexact; round up.
-    fixedEnd = add(fixedEnd, { seconds: 1 });
-  }
+  // | s after | display |
+  // |---------|---------|
+  // |  -1.001 |      2s |
+  // |  -1.000 |      1s |
+  // |  -0.999 |      1s |
+  // |  -0.001 |      1s |
+  // |   0.000 |      0s | <-- ring, ring!
+  // |   0.001 |      0s |
+  // |   0.999 |      0s |
+  // |   1.000 |     -1s |
+  // |   1.001 |     -1s |
+
+  // round up, by pushing the end into the future by 1 second.
+  const shouldRoundUp = (
+    startTime % 1000 !== endTime % 1000 && // only when the difference is inexact
+    endTime > startTime // only round when we're still before the target (because intervalToDuration() calls abs())
+  );
+  const fixedEnd = add(end, { seconds: shouldRoundUp ? 1 : 0 });
 
   const unsignedDuration = intervalToDuration({ start, end: fixedEnd });
-  const showNegative = fixedEnd.getTime() - start.getTime() <= -1000;
+  const showNegative = fixedEnd.getTime() - startTime <= -1000;
 
   return {
     ...unsignedDuration,

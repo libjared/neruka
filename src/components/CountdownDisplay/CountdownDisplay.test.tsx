@@ -215,7 +215,33 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: true, years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20 });
   });
 
-  it('returns 1s when just before', () => {
+  // TODO: function whenXAfterExpectYSeconds() {}
+
+  it('returns 2s when 1.001s before', () => {
+    const result = intervalToDurationCeiling({
+      start: new Date(base),
+      end: new Date(base + 1001),
+    });
+    expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 2 });
+  });
+
+  it('returns 1s when 1.000s before', () => {
+    const result = intervalToDurationCeiling({
+      start: new Date(base),
+      end: new Date(base + 1000),
+    });
+    expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
+  });
+
+  it('returns 1s when 0.999s before', () => {
+    const result = intervalToDurationCeiling({
+      start: new Date(base),
+      end: new Date(base + 999),
+    });
+    expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
+  });
+
+  it('returns 1s when 0.001s before', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base + 1),
@@ -223,7 +249,7 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
   });
 
-  it('returns 0s when exact', () => {
+  it('returns 0s when 0.000s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base),
@@ -231,7 +257,7 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
   });
 
-  it('returns 0s when just after', () => {
+  it('returns 0s when 0.001s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base - 1),
@@ -239,15 +265,15 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
   });
 
-  it('returns 0s when a half-second after', () => {
+  it('returns 0s when 0.999s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
-      end: new Date(base - 500),
+      end: new Date(base - 999),
     });
     expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
   });
 
-  it('returns -1s when one second after', () => {
+  it('returns -1s when 1.000s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
       end: new Date(base - 1000),
@@ -255,11 +281,11 @@ describe('intervalToDurationCeiling', () => {
     expect(result).toEqual({ negative: true, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
   });
 
-  it('doesnt return -0s', () => {
+  it('returns -1s when 1.001s after', () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
-      end: new Date(base - 1063),
+      end: new Date(base - 1001),
     });
-    expect(result).toEqual({ negative: false, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
+    expect(result).toEqual({ negative: true, years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 });
   });
 });
