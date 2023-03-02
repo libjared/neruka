@@ -155,7 +155,7 @@ describe('intervalToDurationCeiling', () => {
       start: new Date(1677104120048),
       end: new Date(1677208120153),
     });
-    expect(result).toEqual({ years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 21 });
+    expect(result).toEqual({ negative: false, years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 21 });
   });
 
   it('doesnt round when the difference is exact', () => {
@@ -163,6 +163,14 @@ describe('intervalToDurationCeiling', () => {
       start: new Date(1677104120048),
       end: new Date(1677208120153-105),
     });
-    expect(result).toEqual({ years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20 });
+    expect(result).toEqual({ negative: false, years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20 });
+  });
+
+  it('returns a negative duration when past', () => {
+    const result = intervalToDurationCeiling({
+      start: new Date(1677208120153-105),
+      end: new Date(1677104120048),
+    });
+    expect(result).toEqual({ negative: true, years: 0, months: 0, days: 1, hours: 4, minutes: 53, seconds: 20 });
   });
 });

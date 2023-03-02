@@ -1,4 +1,4 @@
-import { add, intervalToDuration, toDate } from "date-fns";
+import { add, compareAsc, intervalToDuration, toDate } from "date-fns";
 import { useEffect, useState } from "react";
 
 function getCurrentTime(): Date {
@@ -110,7 +110,11 @@ function toFriendlyDuration(duration: Duration): FriendlyDuration {
   return friendly;
 }
 
-function intervalToDurationCeiling(interval: Interval): Duration {
+type SignedDuration = Duration & {
+  negative: boolean,
+};
+
+function intervalToDurationCeiling(interval: Interval): SignedDuration {
   const start = toDate(interval.start);
   const end = toDate(interval.end);
   const startFrac = start.getTime() % 1000;
@@ -121,7 +125,13 @@ function intervalToDurationCeiling(interval: Interval): Duration {
     // the difference is inexact; round up.
     fixedEnd = add(fixedEnd, { seconds: 1 });
   }
-  return intervalToDuration({ start, end: fixedEnd });
+
+  const unsignedDuration = intervalToDuration({ start, end: fixedEnd });
+
+  return {
+    ...unsignedDuration,
+    negative: compareAsc(end, start) === -1,
+  };
 }
 
 export default CountdownDisplay;
