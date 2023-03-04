@@ -1,8 +1,8 @@
-import { add, intervalToDuration } from 'date-fns';
-import { useState } from 'react';
-import CountdownDisplay from '../CountdownDisplay';
-import DurationInput from '../DurationInput';
-import './Timer.css';
+import { add, intervalToDuration } from "date-fns";
+import { useState } from "react";
+import CountdownDisplay from "../CountdownDisplay";
+import DurationInput from "../DurationInput";
+import "./Timer.css";
 
 // There are several states for a timer's UX:
 // Rest - The clock shows a duration.
@@ -35,23 +35,26 @@ import './Timer.css';
 
 function Timer() {
   // when the timer is stopped, show this. after editing, update this. when clicking Start or Reset, copy this to currentDuration.
-  const [ originalDuration, setOriginalDuration ] = useState<Duration>({ minutes: 15 });
+  const [originalDuration, setOriginalDuration] = useState<Duration>({
+    minutes: 15,
+  });
   // when the timer is stopped, it's null.
   // when the timer is running, it's null.
   // when the timer is paused, show this.
-  const [ currentDuration, setCurrentDuration ] = useState<Duration | null>(null);
+  const [currentDuration, setCurrentDuration] = useState<Duration | null>(null);
   // when the timer is stopped, it's null.
   // when the timer is running, calculate the time remaining from this.
   // when the timer is paused, it's null.
-  const [ alarmTime, setAlarmTime ] = useState<Date | null>(null);
+  const [alarmTime, setAlarmTime] = useState<Date | null>(null);
   // when the timer is stopped, it's null.
   // when the timer is running, it's null.
   // when the timer is paused, it determines whether to show the duration editing view, and force focus on it.
-  const [ initialEditing, setInitialEditing ] = useState<boolean | null>(null);
+  const [initialEditing, setInitialEditing] = useState<boolean | null>(null);
 
   const startTimer = (): void => {
     // we are stopped or paused.
-    const targetDuration = currentDuration !== null ? currentDuration : originalDuration;
+    const targetDuration =
+      currentDuration !== null ? currentDuration : originalDuration;
     // convert duration into time
     const targetTime = add(new Date(), targetDuration);
     setAlarmTime(targetTime);
@@ -59,10 +62,11 @@ function Timer() {
 
   const stopTimer = (): void => {
     // we are running.
-    if (alarmTime === null) throw new Error('Expected alarmTime to be non-null.');
+    if (alarmTime === null)
+      throw new Error("Expected alarmTime to be non-null.");
     const interval: Interval = {
       start: new Date(),
-      end: alarmTime
+      end: alarmTime,
     };
     const targetDuration = intervalToDuration(interval);
     setCurrentDuration(targetDuration);
@@ -84,11 +88,17 @@ function Timer() {
   let display: JSX.Element;
   if (alarmTime !== null) {
     // running
-    display = <CountdownDisplay targetTime={alarmTime} onClick={stopAndEditTimer} />;
+    display = (
+      <CountdownDisplay targetTime={alarmTime} onClick={stopAndEditTimer} />
+    );
   } else {
     // paused or stopped
-    let duration = currentDuration !== null ? currentDuration : originalDuration;
-    const onFinishEditing = (newDuration: Duration, immediatelyStart: boolean): void => {
+    let duration =
+      currentDuration !== null ? currentDuration : originalDuration;
+    const onFinishEditing = (
+      newDuration: Duration,
+      immediatelyStart: boolean
+    ): void => {
       setInitialEditing(false);
       setOriginalDuration(newDuration);
       setCurrentDuration(null);
@@ -99,17 +109,25 @@ function Timer() {
         setAlarmTime(targetTime);
       }
     };
-    display = <DurationInput duration={duration} initialEditing={!!initialEditing} onFinishEditing={onFinishEditing} />;
+    display = (
+      <DurationInput
+        duration={duration}
+        initialEditing={!!initialEditing}
+        onFinishEditing={onFinishEditing}
+      />
+    );
   }
 
   return (
     <div className="Timer">
-      <div className="Timer-display">
-        {display}
-      </div>
+      <div className="Timer-display">{display}</div>
       <nav className="Timer-controls">
-        {alarmTime !== null && <input type="button" value="Stop" onClick={stopTimer} />}
-        {alarmTime === null && <input type="button" value="Start" onClick={startTimer} />}
+        {alarmTime !== null && (
+          <input type="button" value="Stop" onClick={stopTimer} />
+        )}
+        {alarmTime === null && (
+          <input type="button" value="Start" onClick={startTimer} />
+        )}
         <input type="button" value="Reset" onClick={resetTimer} />
       </nav>
     </div>

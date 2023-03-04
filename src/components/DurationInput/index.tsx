@@ -1,10 +1,13 @@
-import classNames from 'classnames';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import Digit from '../Digit';
-import Label from '../Label';
-import './DurationInput.css';
+import classNames from "classnames";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Digit from "../Digit";
+import Label from "../Label";
+import "./DurationInput.css";
 
-function renderDigits(hhmmss: number[], lightLength: number | null): JSX.Element[] {
+function renderDigits(
+  hhmmss: number[],
+  lightLength: number | null
+): JSX.Element[] {
   const elements: JSX.Element[] = [];
   const lightLen = lightLength ?? 9999;
   for (let i = 0; i < hhmmss.length; i++) {
@@ -40,9 +43,10 @@ function digitsFromDuration(duration: Duration): number[] {
 // will always leave at least one element, even if it's also a zero.
 // returns a new array.
 function trimDigits(digits: number[]): number[] {
-  if (digits.length !== 6) throw new Error('Expected digits to have a length of 6.');
+  if (digits.length !== 6)
+    throw new Error("Expected digits to have a length of 6.");
 
-  const newDigits = [ ...digits ];
+  const newDigits = [...digits];
   for (let i = 0; i < newDigits.length - 1; i++) {
     if (newDigits[i] === 0) {
       newDigits.shift();
@@ -56,38 +60,43 @@ function trimDigits(digits: number[]): number[] {
 
 // prepend zeroes until the array has a length of 6.
 // returns a new array.
-function padDigits(digits: number[]) : number[] {
-  if (digits.length > 6) throw new Error('Expected digits to be fewer or equal to 6.');
+function padDigits(digits: number[]): number[] {
+  if (digits.length > 6)
+    throw new Error("Expected digits to be fewer or equal to 6.");
 
-  return [ ...(new Array(6).fill(0)), ...digits ].reverse().slice(0, 6).reverse();
+  return [...new Array(6).fill(0), ...digits].reverse().slice(0, 6).reverse();
 }
 
 type DurationInputProps = {
-  duration: Duration,
-  onFinishEditing: (newDuration: Duration, immediatelyStart: boolean) => void,
-  initialEditing: boolean,
+  duration: Duration;
+  onFinishEditing: (newDuration: Duration, immediatelyStart: boolean) => void;
+  initialEditing: boolean;
 };
 
-function DurationInput({ duration, initialEditing, onFinishEditing }: DurationInputProps) {
+function DurationInput({
+  duration,
+  initialEditing,
+  onFinishEditing,
+}: DurationInputProps) {
   // state initializer pattern; don't listen to any changes in this prop
   const { current: initialProps } = useRef({ initialEditing });
-  const [ didForceFocus, setDidForceFocus ] = useState<boolean>(false);
+  const [didForceFocus, setDidForceFocus] = useState<boolean>(false);
 
-  const [ isEditing, setEditing ] = useState<boolean>(false);
+  const [isEditing, setEditing] = useState<boolean>(false);
 
   // hhmmss, right-aligned, length is [0,6], no left-padding with zeroes.
   // represents the in-progress inputting of a duration.
   // only valid when isEditing true; otherwise null.
-  const [ wipDigits, setWipDigits ] = useState<number[] | null>(null);
+  const [wipDigits, setWipDigits] = useState<number[] | null>(null);
 
   // how many wipDigits from the right should be lit up?
   // the h/m/s labels are also lit, but implicitly (ie they don't contribute to the count).
   // only valid when isEditing true, otherwise null.
-  const [ lightLength, setLightLength ] = useState<number | null>(null);
+  const [lightLength, setLightLength] = useState<number | null>(null);
 
   const startEditing = useCallback(() => {
-    if (isEditing) throw new Error('Expected isEditing to be false.');
-    if (wipDigits !== null) throw new Error('Expected wipDigits to be null.');
+    if (isEditing) throw new Error("Expected isEditing to be false.");
+    if (wipDigits !== null) throw new Error("Expected wipDigits to be null.");
 
     // on edit, every digit is present, but unlit, like a placeholder
     setEditing(true);
@@ -96,14 +105,15 @@ function DurationInput({ duration, initialEditing, onFinishEditing }: DurationIn
   }, [duration, isEditing, wipDigits]);
 
   const saveAndQuit = (startImmediately: boolean) => {
-    if (!isEditing) throw new Error('Expected isEditing to be true.');
-    if (wipDigits === null) throw new Error('Expected wipDigits to be non-null.');
+    if (!isEditing) throw new Error("Expected isEditing to be true.");
+    if (wipDigits === null)
+      throw new Error("Expected wipDigits to be non-null.");
 
     const hhmmss = padDigits(wipDigits);
     const newDuration: Duration = {
       hours: hhmmss[0] * 10 + hhmmss[1],
       minutes: hhmmss[2] * 10 + hhmmss[3],
-      seconds: hhmmss[4] * 10 + hhmmss[5]
+      seconds: hhmmss[4] * 10 + hhmmss[5],
     };
 
     // TODO: run digits through a duration normalizer
@@ -120,7 +130,11 @@ function DurationInput({ duration, initialEditing, onFinishEditing }: DurationIn
   const focusOnMeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (initialProps.initialEditing && !didForceFocus && focusOnMeRef.current !== null) {
+    if (
+      initialProps.initialEditing &&
+      !didForceFocus &&
+      focusOnMeRef.current !== null
+    ) {
       // we start the component's life in the editing view.
       // ws trigger that behavior by forcing focus on the div.
       setDidForceFocus(true);
@@ -137,36 +151,39 @@ function DurationInput({ duration, initialEditing, onFinishEditing }: DurationIn
   };
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (ev) => {
-    if (!isEditing) throw new Error('Expected isEditing to be true.');
-    if (wipDigits === null) throw new Error('Expected wipDigits to be non-null.');
-    if (lightLength === null) throw new Error('Expected lightLength to be non-null.');
+    if (!isEditing) throw new Error("Expected isEditing to be true.");
+    if (wipDigits === null)
+      throw new Error("Expected wipDigits to be non-null.");
+    if (lightLength === null)
+      throw new Error("Expected lightLength to be non-null.");
 
-    if (ev.key === 'Backspace') {
+    if (ev.key === "Backspace") {
       if (wipDigits.length <= 0) return;
       if (lightLength === 0) {
         // backspace when all digits are placeholder sets it to 00h00m00s
         setWipDigits([]);
       } else {
-        const newDigits = [ ...wipDigits ];
+        const newDigits = [...wipDigits];
         newDigits.pop();
         setWipDigits(newDigits);
         setLightLength(lightLength - 1);
       }
-    } else if (ev.key === 'Enter') {
+    } else if (ev.key === "Enter") {
       saveAndQuit(true);
-    } else if ('0' <= ev.key && ev.key <= '9') {
+    } else if ("0" <= ev.key && ev.key <= "9") {
       const digit = Number(ev.key);
-      if (0 > digit || digit > 9) throw new Error('Expected digit to be between 0 and 9 inclusive.');
+      if (0 > digit || digit > 9)
+        throw new Error("Expected digit to be between 0 and 9 inclusive.");
 
       let initial: Array<number>;
       if (lightLength === 0) {
         initial = []; // discard the existing placeholder digits
       } else {
-        initial = [ ...wipDigits ]; // we're in the process of typing digits
+        initial = [...wipDigits]; // we're in the process of typing digits
       }
 
       if (initial.length < 6) {
-        setWipDigits([ ...initial, digit ]);
+        setWipDigits([...initial, digit]);
         setLightLength(lightLength + 1);
       }
     }
@@ -176,14 +193,17 @@ function DurationInput({ duration, initialEditing, onFinishEditing }: DurationIn
     let hhmmss: number[];
 
     if (isEditing) {
-      if (wipDigits === null) throw new Error('Expected wipDigits to be non-null.');
-      if (lightLength === null) throw new Error('Expected lightLength to be non-null.');
+      if (wipDigits === null)
+        throw new Error("Expected wipDigits to be non-null.");
+      if (lightLength === null)
+        throw new Error("Expected lightLength to be non-null.");
 
       hhmmss = padDigits(wipDigits);
     } else {
       // not editing
-      if (wipDigits !== null) throw new Error('Expected wipDigits to be null.');
-      if (lightLength !== null) throw new Error('Expected lightLength to be null.');
+      if (wipDigits !== null) throw new Error("Expected wipDigits to be null.");
+      if (lightLength !== null)
+        throw new Error("Expected lightLength to be null.");
 
       hhmmss = trimDigits(digitsFromDuration(duration));
     }
@@ -192,7 +212,7 @@ function DurationInput({ duration, initialEditing, onFinishEditing }: DurationIn
   })();
 
   const innerClass = classNames("DurationInput-area", {
-    editing: isEditing
+    editing: isEditing,
   });
 
   return (
@@ -205,9 +225,7 @@ function DurationInput({ duration, initialEditing, onFinishEditing }: DurationIn
       tabIndex={0}
       role={isEditing ? "textbox" : "timer"}
     >
-      <div className={innerClass}>
-        {children}
-      </div>
+      <div className={innerClass}>{children}</div>
     </div>
   );
 }

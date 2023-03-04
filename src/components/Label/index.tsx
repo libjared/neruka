@@ -1,8 +1,8 @@
 import classNames from "classnames";
 
 type LabelProps = {
-  label: "h" | "m" | "s"
-  isLit: boolean
+  label: "h" | "m" | "s";
+  isLit: boolean;
 };
 
 function Label({ label, isLit }: LabelProps) {
@@ -10,11 +10,9 @@ function Label({ label, isLit }: LabelProps) {
     hours: label === "h",
     minutes: label === "m",
     seconds: label === "s",
-    lit: isLit
+    lit: isLit,
   });
-  return (
-    <span className={classes}>{label}</span>
-  );
+  return <span className={classes}>{label}</span>;
 }
 
 export default Label;

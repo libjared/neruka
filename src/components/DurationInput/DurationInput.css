@@ -15,10 +15,12 @@
   cursor: default;
 }
 
-.Digit, .Label {
+.Digit,
+.Label {
   color: #5f6368;
 }
-.Digit.lit, .Label.lit {
+.Digit.lit,
+.Label.lit {
   color: #e8eaed;
 }
 
