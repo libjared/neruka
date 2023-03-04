@@ -1,9 +1,6 @@
 import { add, intervalToDuration, toDate } from "date-fns";
-import { useEffect, useState } from "react";
-
-function getCurrentTime(): Date {
-  return new Date();
-}
+import useClock from "../Hooks/UseClock";
+import { BaseTenDigit, FriendlyDuration, SignedDuration } from "../Types";
 
 type CountdownDisplayProps = {
   targetTime: Date;
@@ -11,17 +8,7 @@ type CountdownDisplayProps = {
 };
 
 function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
-  const [currentTime, setCurrentTime] = useState<Date>(getCurrentTime());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(getCurrentTime());
-    }, 200);
-
-    return () => {
-      clearInterval(interval);
-    };
-  });
+  const currentTime = useClock();
 
   const handleClick = () => {
     onClick();
@@ -63,18 +50,6 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
     </span>
   );
 }
-
-type BaseTenDigit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-
-type FriendlyDuration = {
-  negative: boolean;
-  hourTens?: BaseTenDigit;
-  hourOnes?: BaseTenDigit;
-  minuteTens?: BaseTenDigit;
-  minuteOnes?: BaseTenDigit;
-  secondTens?: BaseTenDigit;
-  secondOnes: BaseTenDigit; // the only required digit
-};
 
 // A whole number is any integer that is zero or positive.
 function isWhole(num: number): boolean {
@@ -163,10 +138,6 @@ function toFriendlyDuration(duration: SignedDuration): FriendlyDuration {
   return friendly;
 }
 
-type SignedDuration = Duration & {
-  negative: boolean;
-};
-
 function intervalToDurationCeiling(interval: Interval): SignedDuration {
   const start = toDate(interval.start);
   const end = toDate(interval.end);
@@ -202,5 +173,3 @@ function intervalToDurationCeiling(interval: Interval): SignedDuration {
 
 export default CountdownDisplay;
 export { toFriendlyDuration, intervalToDurationCeiling };
-
-export type { FriendlyDuration };

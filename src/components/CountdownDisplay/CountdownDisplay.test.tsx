@@ -6,10 +6,10 @@ import {
   screen,
 } from "@testing-library/react";
 import CountdownDisplay, {
-  FriendlyDuration,
   intervalToDurationCeiling,
   toFriendlyDuration,
 } from ".";
+import { FriendlyDuration } from "../Types";
 
 jest.useFakeTimers();
 
