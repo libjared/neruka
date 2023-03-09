@@ -19,6 +19,18 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
     end: targetTime,
   });
 
+  const text = signedDurationToString(duration);
+
+  return (
+    <>
+      <span role="timer" onClick={handleClick}>
+        {text}
+      </span>
+    </>
+  );
+}
+
+function signedDurationToString(duration: SignedDuration): string {
   const dur = toFriendlyDuration(duration);
 
   let str = "";
@@ -43,12 +55,7 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
   str += `${dur.secondOnes}s`;
 
   const text = str;
-
-  return (
-    <span role="timer" onClick={handleClick}>
-      {text}
-    </span>
-  );
+  return text;
 }
 
 // A whole number is any integer that is zero or positive.
@@ -163,4 +170,8 @@ function intervalToDurationCeiling(interval: Interval): SignedDuration {
 }
 
 export default CountdownDisplay;
-export { toFriendlyDuration, intervalToDurationCeiling };
+export {
+  toFriendlyDuration,
+  intervalToDurationCeiling,
+  signedDurationToString,
+};
