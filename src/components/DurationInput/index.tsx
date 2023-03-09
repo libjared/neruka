@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Digit from "../Digit";
 import Label from "../Label";
+import { SignedDuration } from "../Types";
 import "./DurationInput.css";
 
 function renderDigits(
@@ -28,7 +29,7 @@ function renderDigits(
 }
 
 // returns a new left-padded array of digits.
-function digitsFromDuration(duration: Duration): number[] {
+function digitsFromDuration(duration: SignedDuration): number[] {
   return [
     Math.floor((duration.hours || 0) / 10),
     Math.floor((duration.hours || 0) % 10),
@@ -68,8 +69,11 @@ function padDigits(digits: number[]): number[] {
 }
 
 type DurationInputProps = {
-  duration: Duration;
-  onFinishEditing: (newDuration: Duration, immediatelyStart: boolean) => void;
+  duration: SignedDuration;
+  onFinishEditing: (
+    newDuration: SignedDuration,
+    immediatelyStart: boolean
+  ) => void;
   initialEditing: boolean;
 };
 
@@ -110,7 +114,8 @@ function DurationInput({
       throw new Error("Expected wipDigits to be non-null.");
 
     const hhmmss = padDigits(wipDigits);
-    const newDuration: Duration = {
+    const newDuration: SignedDuration = {
+      negative: false,
       hours: hhmmss[0] * 10 + hhmmss[1],
       minutes: hhmmss[2] * 10 + hhmmss[3],
       seconds: hhmmss[4] * 10 + hhmmss[5],

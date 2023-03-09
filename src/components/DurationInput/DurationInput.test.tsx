@@ -5,6 +5,7 @@ import {
   screen,
 } from "@testing-library/react";
 import DurationInput, { padDigits, trimDigits } from ".";
+import { SignedDuration } from "../Types";
 
 type AllowedKey =
   | "0"
@@ -26,7 +27,7 @@ type SetupResult = RenderResult & {
   focusOnTimer: () => void;
   typeKey: (key: AllowedKey) => void;
   blurTextbox: () => void;
-  handleFinishEditing: jest.Mock<void, [Duration, boolean]>;
+  handleFinishEditing: jest.Mock<void, [SignedDuration, boolean]>;
 };
 
 function setup(args?: SetupArgs): SetupResult {
@@ -34,8 +35,13 @@ function setup(args?: SetupArgs): SetupResult {
   if (args !== undefined && args.initialEditing !== undefined) {
     initialEditing = args.initialEditing;
   }
-  const duration: Duration = { hours: 0, minutes: 15, seconds: 0 };
-  const handleFinishEditing = jest.fn<void, [Duration, boolean]>();
+  const duration: SignedDuration = {
+    negative: false,
+    hours: 0,
+    minutes: 15,
+    seconds: 0,
+  };
+  const handleFinishEditing = jest.fn<void, [SignedDuration, boolean]>();
   const utils: RenderResult = render(
     <DurationInput
       duration={duration}
@@ -162,7 +168,12 @@ describe("when blurring", () => {
 
   it("calls onFinishEditing", () => {
     const { handleFinishEditing } = setupAfterEditingCase();
-    const expectedDuration: Duration = { hours: 0, minutes: 4, seconds: 51 };
+    const expectedDuration: SignedDuration = {
+      negative: false,
+      hours: 0,
+      minutes: 4,
+      seconds: 51,
+    };
     expect(handleFinishEditing).toHaveBeenCalledTimes(1);
     expect(handleFinishEditing).toHaveBeenCalledWith(expectedDuration, false);
   });
@@ -182,7 +193,12 @@ describe("when hitting enter in edit mode", () => {
 
   it("calls onFinishEditing with startImmediately", () => {
     const { handleFinishEditing } = setupStartImmediatelyCase();
-    const expectedDuration: Duration = { hours: 0, minutes: 4, seconds: 51 };
+    const expectedDuration: SignedDuration = {
+      negative: false,
+      hours: 0,
+      minutes: 4,
+      seconds: 51,
+    };
     expect(handleFinishEditing).toHaveBeenCalledTimes(1);
     expect(handleFinishEditing).toHaveBeenCalledWith(expectedDuration, true);
   });

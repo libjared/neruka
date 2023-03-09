@@ -2,6 +2,7 @@ import { add, intervalToDuration } from "date-fns";
 import { useState } from "react";
 import CountdownDisplay from "../CountdownDisplay";
 import DurationInput from "../DurationInput";
+import { SignedDuration } from "../Types";
 import "./Timer.css";
 
 // There are several states for a timer's UX:
@@ -35,13 +36,16 @@ import "./Timer.css";
 
 function Timer() {
   // when the timer is stopped, show this. after editing, update this. when clicking Start or Reset, copy this to currentDuration.
-  const [originalDuration, setOriginalDuration] = useState<Duration>({
+  const [originalDuration, setOriginalDuration] = useState<SignedDuration>({
+    negative: false,
     minutes: 15,
   });
   // when the timer is stopped, it's null.
   // when the timer is running, it's null.
   // when the timer is paused, show this.
-  const [currentDuration, setCurrentDuration] = useState<Duration | null>(null);
+  const [currentDuration, setCurrentDuration] = useState<SignedDuration | null>(
+    null
+  );
   // when the timer is stopped, it's null.
   // when the timer is running, calculate the time remaining from this.
   // when the timer is paused, it's null.
@@ -69,7 +73,13 @@ function Timer() {
       end: alarmTime,
     };
     const targetDuration = intervalToDuration(interval);
-    setCurrentDuration(targetDuration);
+    const targetSignedDuration = {
+      negative: false,
+      hours: targetDuration.hours,
+      minutes: targetDuration.minutes,
+      seconds: targetDuration.seconds,
+    };
+    setCurrentDuration(targetSignedDuration);
     setAlarmTime(null);
   };
 
@@ -96,7 +106,7 @@ function Timer() {
     let duration =
       currentDuration !== null ? currentDuration : originalDuration;
     const onFinishEditing = (
-      newDuration: Duration,
+      newDuration: SignedDuration,
       immediatelyStart: boolean
     ): void => {
       setInitialEditing(false);
