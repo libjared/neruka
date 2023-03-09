@@ -166,7 +166,9 @@ function intervalToDurationCeiling(interval: Interval): SignedDuration {
   const showNegative = fixedEnd.getTime() - startTime <= -1000;
 
   return {
-    ...unsignedDuration,
+    hours: unsignedDuration.hours,
+    minutes: unsignedDuration.minutes,
+    seconds: unsignedDuration.seconds,
     negative: showNegative,
   };
 }

@@ -213,13 +213,10 @@ describe("intervalToDurationCeiling", () => {
   it("rounds up", () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
-      end: new Date(base + 104000105),
+      end: new Date(base + 17600105),
     });
     expect(result).toEqual({
       negative: false,
-      years: 0,
-      months: 0,
-      days: 1,
       hours: 4,
       minutes: 53,
       seconds: 21,
@@ -229,13 +226,10 @@ describe("intervalToDurationCeiling", () => {
   it("doesnt round when the difference is exact", () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
-      end: new Date(base + 104000000),
+      end: new Date(base + 17600000),
     });
     expect(result).toEqual({
       negative: false,
-      years: 0,
-      months: 0,
-      days: 1,
       hours: 4,
       minutes: 53,
       seconds: 20,
@@ -245,13 +239,10 @@ describe("intervalToDurationCeiling", () => {
   it("returns a negative duration when past", () => {
     const result = intervalToDurationCeiling({
       start: new Date(base),
-      end: new Date(base - 104000000),
+      end: new Date(base - (104000000 - 86400000)),
     });
     expect(result).toEqual({
       negative: true,
-      years: 0,
-      months: 0,
-      days: 1,
       hours: 4,
       minutes: 53,
       seconds: 20,
@@ -268,9 +259,6 @@ describe("intervalToDurationCeiling", () => {
       });
       expect(result).toEqual({
         negative: expectedSeconds < 0,
-        years: 0,
-        months: 0,
-        days: 0,
         hours: 0,
         minutes: 0,
         seconds: Math.abs(expectedSeconds),
