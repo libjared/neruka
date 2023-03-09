@@ -140,12 +140,6 @@ describe("toFriendlyDuration", () => {
     });
   });
 
-  it("rejects ranges above a day", () => {
-    expect(() => {
-      toFriendlyDuration({ negative: false, days: 1 });
-    }).toThrowError("Expected days to be 0 or undefined.");
-  });
-
   it("rejects durations with fractional members", () => {
     expect(() => {
       toFriendlyDuration({ negative: false, hours: 0.5, minutes: 13 });

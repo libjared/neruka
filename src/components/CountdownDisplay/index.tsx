@@ -57,15 +57,6 @@ function isWhole(num: number): boolean {
 }
 
 function toFriendlyDuration(duration: SignedDuration): FriendlyDuration {
-  if (duration.days !== undefined && duration.days !== 0)
-    throw new Error("Expected days to be 0 or undefined.");
-  if (duration.weeks !== undefined && duration.weeks !== 0)
-    throw new Error("Expected weeks to be 0 or undefined.");
-  if (duration.months !== undefined && duration.months !== 0)
-    throw new Error("Expected months to be 0 or undefined.");
-  if (duration.years !== undefined && duration.years !== 0)
-    throw new Error("Expected years to be 0 or undefined.");
-
   if (duration.hours !== undefined && !isWhole(duration.hours))
     throw new Error("Expected hours to be a whole number.");
   if (duration.minutes !== undefined && !isWhole(duration.minutes))
