@@ -1,4 +1,5 @@
 import { add, intervalToDuration, toDate } from "date-fns";
+import Announcer from "../Hooks/Announcer";
 import useClock from "../Hooks/UseClock";
 import { BaseTenDigit, FriendlyDuration, SignedDuration } from "../Types";
 
@@ -23,6 +24,7 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
 
   return (
     <>
+      <Announcer duration={duration} />
       <span role="timer" onClick={handleClick}>
         {text}
       </span>
