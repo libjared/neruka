@@ -27,8 +27,6 @@ type AnnouncerProps = {
 };
 
 const Announcer = React.memo(({ duration }: AnnouncerProps) => {
-  console.log("render", signedDurationToString(duration));
-
   const audioRef = useRef<HTMLAudioElement>(null);
   // the idx of the next upcoming milestone, or the one whose sound we're currently playing.
   const [currentIdx, setCurrentIdx] = useState<number>(() =>
@@ -83,7 +81,6 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
         ref={audioRef}
         src={currentMilestone?.sound.src}
         onCanPlayThrough={() => {
-          console.log(`onCanPlayThrough`);
           setIsLoaded(true);
         }}
         onEnded={() => {
@@ -92,7 +89,6 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
           }
           const newSrc = currentMilestone?.sound.src;
           const currentSrc = audioRef.current.src;
-          console.log(`onEnded: Changing src from ${currentSrc} to ${newSrc}.`);
 
           // If the milestone that just ended has the same src as the next,
           // <audio src> attribute won't change, thus onCanPlayThrough won't fire next time.
