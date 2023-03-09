@@ -1,7 +1,6 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
 import audioClips, { AudioClip } from "../../data/AudioClips";
-import { signedDurationToString } from "../CountdownDisplay";
 import { SignedDuration } from "../Types";
 
 type MilestoneDefinition = {
@@ -70,11 +69,6 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
     audioRef.current.play();
   }, [currentMilestone, shouldPlay]);
 
-  const debugText =
-    currentIdx < MilestoneList.length
-      ? signedDurationToString(MilestoneList[currentIdx].at)
-      : "None";
-
   return (
     <>
       <audio
@@ -100,7 +94,6 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
           setCurrentIdx((cidx) => cidx + 1);
         }}
       />
-      <span>(targeting {debugText})...</span>
     </>
   );
 }, propsAreEqual);
