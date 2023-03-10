@@ -85,13 +85,13 @@ describe("findInitialIdx", () => {
     expect(findInitialIdx(duration)).toBe(0);
   });
 
-  it("returns 1 for exactly 14m50s", () => {
-    const duration = { negative: false, minutes: 14, seconds: 50 };
+  it("returns 1 for exactly 14m", () => {
+    const duration = { negative: false, minutes: 14, seconds: 0 };
     expect(findInitialIdx(duration)).toBe(1);
   });
 
-  it("returns 2 for 14m49s", () => {
-    const duration = { negative: false, minutes: 14, seconds: 49 };
+  it("returns 2 for 13m59s", () => {
+    const duration = { negative: false, minutes: 13, seconds: 59 };
     expect(findInitialIdx(duration)).toBe(2);
   });
 });

@@ -11,14 +11,118 @@ type MilestoneDefinition = {
 // list of milestones and their associated clips.
 // sorted by `at` in descending order.
 const MilestoneList: ReadonlyArray<MilestoneDefinition> = [
-  { at: { negative: false, minutes: 15 }, sound: audioClips.remain15m },
   {
-    at: { negative: false, minutes: 14, seconds: 50 },
-    sound: audioClips.remain15m,
+    at: { negative: false, minutes: 15 },
+    sound: audioClips.vox15mtogo,
   },
-  { at: { negative: false, minutes: 14 }, sound: audioClips.remain15m },
-  { at: { negative: false, seconds: 1 }, sound: audioClips.remain15m },
-  { at: { negative: false, seconds: 0 }, sound: audioClips.remain15m },
+  {
+    at: { negative: false, minutes: 14 },
+    sound: audioClips.vox14,
+  },
+  {
+    at: { negative: false, minutes: 13 },
+    sound: audioClips.vox13,
+  },
+  {
+    at: { negative: false, minutes: 12 },
+    sound: audioClips.vox12,
+  },
+  {
+    at: { negative: false, minutes: 11 },
+    sound: audioClips.vox11,
+  },
+  {
+    at: { negative: false, minutes: 10 },
+    sound: audioClips.vox10,
+  },
+  {
+    at: { negative: false, minutes: 9 },
+    sound: audioClips.vox09,
+  },
+  {
+    at: { negative: false, minutes: 8 },
+    sound: audioClips.vox08,
+  },
+  {
+    at: { negative: false, minutes: 7 },
+    sound: audioClips.vox07,
+  },
+  {
+    at: { negative: false, minutes: 6 },
+    sound: audioClips.vox06,
+  },
+  {
+    at: { negative: false, minutes: 5 },
+    sound: audioClips.vox05,
+  },
+  {
+    at: { negative: false, minutes: 4 },
+    sound: audioClips.vox04,
+  },
+  {
+    at: { negative: false, minutes: 3 },
+    sound: audioClips.vox03,
+  },
+  {
+    at: { negative: false, minutes: 2 },
+    sound: audioClips.vox02,
+  },
+  {
+    at: { negative: false, minutes: 1 },
+    sound: audioClips.vox01mrem,
+  },
+  {
+    at: { negative: false, seconds: 30 },
+    sound: audioClips.vox30s,
+  },
+  {
+    at: { negative: false, seconds: 10 },
+    sound: audioClips.vox10,
+  },
+  {
+    at: { negative: false, seconds: 9 },
+    sound: audioClips.vox09,
+  },
+  {
+    at: { negative: false, seconds: 8 },
+    sound: audioClips.vox08,
+  },
+  {
+    at: { negative: false, seconds: 7 },
+    sound: audioClips.vox07,
+  },
+  {
+    at: { negative: false, seconds: 6 },
+    sound: audioClips.vox06,
+  },
+  {
+    at: { negative: false, seconds: 5 },
+    sound: audioClips.vox05,
+  },
+  {
+    at: { negative: false, seconds: 4 },
+    sound: audioClips.vox04,
+  },
+  {
+    at: { negative: false, seconds: 3 },
+    sound: audioClips.vox03,
+  },
+  {
+    at: { negative: false, seconds: 2 },
+    sound: audioClips.vox02,
+  },
+  {
+    at: { negative: false, seconds: 1 },
+    sound: audioClips.vox01,
+  },
+  {
+    at: { negative: false, seconds: 0 },
+    sound: audioClips.vox00,
+  },
+  {
+    at: { negative: true, seconds: 10 },
+    sound: audioClips.voxTimeAway,
+  },
 ];
 
 type AnnouncerProps = {
