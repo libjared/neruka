@@ -58,13 +58,6 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
     if (currentMilestone === null) {
       throw new Error("Expected currentMilestone not to be null.");
     }
-    const actualSrc = audioRef.current.src;
-    const expectSrc = currentMilestone.sound.src;
-    if (!actualSrc.endsWith(expectSrc)) {
-      throw new Error(
-        `Expected audioRef.current.src to end with ${expectSrc}, but it was ${actualSrc}.`
-      );
-    }
     setIsPlaying(true);
     audioRef.current.play();
   }, [currentMilestone, shouldPlay]);
@@ -81,15 +74,13 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
           if (audioRef.current === null) {
             throw new Error("Expected audioRef.current not to be null.");
           }
-          const newSrc = currentMilestone?.sound.src;
-          const currentSrc = audioRef.current.src;
 
-          // If the milestone that just ended has the same src as the next,
-          // <audio src> attribute won't change, thus onCanPlayThrough won't fire next time.
-          // We'll be waiting forever for it to load, not aware it already has. So let's keep it loaded.
-          if (newSrc === undefined || !isSrcEqual(currentSrc, newSrc)) {
-            setIsLoaded(false);
-          }
+          // FIXME: If the milestone that just ended has the same src as the
+          // next, <audio src> attribute won't change, thus onCanPlayThrough
+          // won't fire next time. We'll be waiting forever for it to load,
+          // not aware it already has. We can't reliably check this, so two
+          // milestones sharing the same sound src is unsupported.
+          setIsLoaded(false);
           setIsPlaying(false);
           setCurrentIdx((cidx) => cidx + 1);
         }}
@@ -97,10 +88,6 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
     </>
   );
 }, propsAreEqual);
-
-function isSrcEqual(currentSrc: string, newSrc: string): boolean {
-  return currentSrc.endsWith(newSrc);
-}
 
 function propsAreEqual(
   prevProps: Readonly<AnnouncerProps>,
