@@ -144,9 +144,8 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
     currentIdx < MilestoneList.length ? MilestoneList[currentIdx] : null;
 
   const isPassed =
-    currentMilestone !== null
-      ? compareDuration(duration, currentMilestone.at) !== 1
-      : false;
+    currentMilestone !== null &&
+    compareDuration(duration, currentMilestone.at) !== 1;
 
   // TODO: what are the implications of having this inside the effect vs outside?
   const shouldPlay = isPassed && isLoaded && !isPlaying;
