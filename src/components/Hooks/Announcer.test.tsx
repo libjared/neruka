@@ -1,6 +1,11 @@
 import { render, RenderResult, screen } from "@testing-library/react";
 import Announcer, { compareDuration, findInitialIdx } from "./Announcer";
 import { act } from "react-test-renderer";
+import { SignedDuration } from "../Types";
+
+type SetupArgs = {
+  duration: SignedDuration;
+};
 
 type SetupResult = RenderResult & {
   mediaPlay: jest.Mock<Promise<void>, []>;
@@ -9,13 +14,13 @@ type SetupResult = RenderResult & {
   fireEnded: () => void;
 };
 
-function setup(): SetupResult {
+function setup(args?: SetupArgs): SetupResult {
   const mediaPlay = jest.fn<Promise<void>, []>();
   window.HTMLMediaElement.prototype.play = mediaPlay;
 
-  const utils = render(
-    <Announcer duration={{ negative: false, minutes: 15 }} />
-  );
+  const duration = args?.duration ?? { negative: false, minutes: 15 };
+
+  const utils = render(<Announcer duration={duration} />);
 
   const getAudio = () => screen.getByTitle("announcer") as HTMLAudioElement;
   const fireAudioEvent = (type: string) =>
@@ -53,6 +58,14 @@ it("targets the next milestone when the sound clip ends", () => {
   fireCanPlayThrough();
   fireEnded();
   expect(audio.src).toBe("http://localhost/fourteen.ogg");
+});
+
+it("doesn't target anything when all milestones have passed", () => {
+  const { getAudio } = setup({
+    duration: { negative: true, seconds: 16 },
+  });
+  const audio = getAudio();
+  expect(audio.src).toBe("");
 });
 
 describe("compareDuration", () => {
@@ -134,5 +147,10 @@ describe("findInitialIdx", () => {
   it("returns 2 for 13m59s", () => {
     const duration = { negative: false, minutes: 13, seconds: 59 };
     expect(findInitialIdx(duration)).toBe(2);
+  });
+
+  it("returns length for a very overdue duration", () => {
+    const duration = { negative: true, hours: 23 };
+    expect(findInitialIdx(duration)).toBe(28);
   });
 });
