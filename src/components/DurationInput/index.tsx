@@ -44,8 +44,9 @@ function digitsFromDuration(duration: SignedDuration): number[] {
 // will always leave at least one element, even if it's also a zero.
 // returns a new array.
 function trimDigits(digits: number[]): number[] {
-  if (digits.length !== 6)
+  if (digits.length !== 6) {
     throw new Error("Expected digits to have a length of 6.");
+  }
 
   const newDigits = [...digits];
   for (let i = 0; i < newDigits.length - 1; i++) {
@@ -62,8 +63,9 @@ function trimDigits(digits: number[]): number[] {
 // prepend zeroes until the array has a length of 6.
 // returns a new array.
 function padDigits(digits: number[]): number[] {
-  if (digits.length > 6)
+  if (digits.length > 6) {
     throw new Error("Expected digits to be fewer or equal to 6.");
+  }
 
   return [...new Array(6).fill(0), ...digits].reverse().slice(0, 6).reverse();
 }
@@ -99,8 +101,14 @@ function DurationInput({
   const [lightLength, setLightLength] = useState<number | null>(null);
 
   const startEditing = useCallback(() => {
-    if (isEditing) throw new Error("Expected isEditing to be false.");
-    if (wipDigits !== null) throw new Error("Expected wipDigits to be null.");
+    /* istanbul ignore next - unreachable */
+    if (isEditing) {
+      throw new Error("Expected isEditing to be false.");
+    }
+    /* istanbul ignore next - unreachable */
+    if (wipDigits !== null) {
+      throw new Error("Expected wipDigits to be null.");
+    }
 
     // on edit, every digit is present, but unlit, like a placeholder
     setEditing(true);
@@ -109,9 +117,14 @@ function DurationInput({
   }, [duration, isEditing, wipDigits]);
 
   const saveAndQuit = (startImmediately: boolean) => {
-    if (!isEditing) throw new Error("Expected isEditing to be true.");
-    if (wipDigits === null)
+    /* istanbul ignore next - unreachable */
+    if (!isEditing) {
+      throw new Error("Expected isEditing to be true.");
+    }
+    /* istanbul ignore next - unreachable */
+    if (wipDigits === null) {
       throw new Error("Expected wipDigits to be non-null.");
+    }
 
     const hhmmss = padDigits(wipDigits);
     const newDuration: SignedDuration = {
@@ -156,11 +169,18 @@ function DurationInput({
   };
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (ev) => {
-    if (!isEditing) throw new Error("Expected isEditing to be true.");
-    if (wipDigits === null)
+    /* istanbul ignore next - unreachable */
+    if (!isEditing) {
+      throw new Error("Expected isEditing to be true.");
+    }
+    /* istanbul ignore next - unreachable */
+    if (wipDigits === null) {
       throw new Error("Expected wipDigits to be non-null.");
-    if (lightLength === null)
+    }
+    /* istanbul ignore next - unreachable */
+    if (lightLength === null) {
       throw new Error("Expected lightLength to be non-null.");
+    }
 
     if (ev.key === "Backspace") {
       if (wipDigits.length <= 0) return;
@@ -177,8 +197,10 @@ function DurationInput({
       saveAndQuit(true);
     } else if ("0" <= ev.key && ev.key <= "9") {
       const digit = Number(ev.key);
-      if (0 > digit || digit > 9)
+      /* istanbul ignore next - unreachable */
+      if (0 > digit || digit > 9) {
         throw new Error("Expected digit to be between 0 and 9 inclusive.");
+      }
 
       let initial: Array<number>;
       if (lightLength === 0) {
@@ -198,17 +220,26 @@ function DurationInput({
     let hhmmss: number[];
 
     if (isEditing) {
-      if (wipDigits === null)
+      /* istanbul ignore next - unreachable */
+      if (wipDigits === null) {
         throw new Error("Expected wipDigits to be non-null.");
-      if (lightLength === null)
+      }
+      /* istanbul ignore next - unreachable */
+      if (lightLength === null) {
         throw new Error("Expected lightLength to be non-null.");
+      }
 
       hhmmss = padDigits(wipDigits);
     } else {
       // not editing
-      if (wipDigits !== null) throw new Error("Expected wipDigits to be null.");
-      if (lightLength !== null)
+      /* istanbul ignore next - unreachable */
+      if (wipDigits !== null) {
+        throw new Error("Expected wipDigits to be null.");
+      }
+      /* istanbul ignore next - unreachable */
+      if (lightLength !== null) {
         throw new Error("Expected lightLength to be null.");
+      }
 
       hhmmss = trimDigits(digitsFromDuration(duration));
     }

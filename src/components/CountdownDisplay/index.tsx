@@ -85,10 +85,11 @@ function toFriendlyDuration(duration: SignedDuration): FriendlyDuration {
   const digits: BaseTenDigit[] = new Array(6).fill("0");
 
   const asBaseTenDigit = (digit: string) => {
-    if (digit.length === 1 && digit >= "0" && digit <= "9") {
-      return digit as BaseTenDigit;
+    /* istanbul ignore next - unreachable */
+    if (digit.length !== 1 || digit < "0" || digit > "9") {
+      return "0";
     }
-    return "0"; // this should never happen
+    return digit as BaseTenDigit;
   };
 
   const safeHours = duration.hours || 0;
@@ -102,39 +103,20 @@ function toFriendlyDuration(duration: SignedDuration): FriendlyDuration {
   digits[4] = asBaseTenDigit(Math.floor(safeSecs / 10).toString());
   digits[5] = asBaseTenDigit((safeSecs % 10).toString());
 
+  const firstNonZero = digits.findIndex((v) => v !== "0");
+  // this always has at least one element, even if digits are all zeroes:
+  const trimmedDigits = digits.slice(firstNonZero);
+
   const friendly: FriendlyDuration = {
     negative: duration.negative,
-    hourTens: digits[0],
-    hourOnes: digits[1],
-    minuteTens: digits[2],
-    minuteOnes: digits[3],
-    secondTens: digits[4],
-    secondOnes: digits[5],
+    secondOnes: trimmedDigits.pop()!,
+    secondTens: trimmedDigits.pop(),
+    minuteOnes: trimmedDigits.pop(),
+    minuteTens: trimmedDigits.pop(),
+    hourOnes: trimmedDigits.pop(),
+    hourTens: trimmedDigits.pop(),
   };
 
-  if (friendly.hourTens === "0") {
-    delete friendly.hourTens;
-  } else {
-    return friendly;
-  }
-  if (friendly.hourOnes === "0") {
-    delete friendly.hourOnes;
-  } else {
-    return friendly;
-  }
-  if (friendly.minuteTens === "0") {
-    delete friendly.minuteTens;
-  } else {
-    return friendly;
-  }
-  if (friendly.minuteOnes === "0") {
-    delete friendly.minuteOnes;
-  } else {
-    return friendly;
-  }
-  if (friendly.secondTens === "0") {
-    delete friendly.secondTens;
-  }
   return friendly;
 }
 

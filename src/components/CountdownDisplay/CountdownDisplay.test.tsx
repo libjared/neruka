@@ -17,18 +17,20 @@ type SetupResult = RenderResult & {
   advanceClockShort: () => void;
   advanceClockHalfSecond: () => void;
   advanceClockOneSecond: () => void;
+  advanceClockToTarget: () => void;
   advanceClock505PastTarget: () => void;
   click: () => void;
   handleClick: jest.Mock<void, void[]>;
   expectedTextInitial: string;
   expectedTextOneSecond: string;
+  expectedTextTarget: string;
   expectedText505PastTarget: string;
 };
 
 function setup(): SetupResult {
-  const fakeCurrentTime = new Date(2023, 1, 15, 6, 0);
+  const fakeCurrentTime = new Date(2023, 1, 15, 0, 0);
   jest.setSystemTime(fakeCurrentTime);
-  const targetTime = new Date(2023, 1, 15, 8, 0);
+  const targetTime = new Date(2023, 1, 15, 11, 0);
   const handleClick = jest.fn<void, void[]>();
   const utils: RenderResult = render(
     <CountdownDisplay targetTime={targetTime} onClick={handleClick} />
@@ -48,9 +50,20 @@ function setup(): SetupResult {
       jest.advanceTimersByTime(1000);
     });
   };
+  const advanceClockToTarget = () => {
+    act(() => {
+      const hrs = 11;
+      const mins = 0;
+      const secs = 0;
+      jest.advanceTimersByTime(((hrs * 60 + mins) * 60 + secs) * 1000);
+    });
+  };
   const advanceClock505PastTarget = () => {
     act(() => {
-      jest.advanceTimersByTime(((2 * 60 + 5) * 60 + 5) * 1000);
+      const hrs = 11;
+      const mins = 5;
+      const secs = 5;
+      jest.advanceTimersByTime(((hrs * 60 + mins) * 60 + secs) * 1000);
     });
   };
   const click = () => {
@@ -62,11 +75,14 @@ function setup(): SetupResult {
     advanceClockShort,
     advanceClockHalfSecond,
     advanceClockOneSecond,
+    advanceClockToTarget,
     advanceClock505PastTarget,
     click,
     handleClick,
-    expectedTextInitial: "2h00m00s",
-    expectedTextOneSecond: "1h59m59s",
+    // TODO is it necessary to include these as utils
+    expectedTextInitial: "11h00m00s",
+    expectedTextOneSecond: "10h59m59s",
+    expectedTextTarget: "0s",
     expectedText505PastTarget: "-5m05s",
   };
 }
@@ -75,6 +91,15 @@ it("renders the correct text", () => {
   const { expectedTextInitial } = setup();
   expect(screen.getByText(expectedTextInitial)).toBeInTheDocument();
 });
+
+// it("renders the correct text B", () => {
+//   const targetTime = new Date(2023, 1, 15, 11, 0);
+//   const handleClick = jest.fn<void, void[]>();
+//   const utils: RenderResult = render(
+//     <CountdownDisplay targetTime={targetTime} onClick={handleClick} />
+//   );
+//   expect();
+// });
 
 it("calls handleClick when clicked", () => {
   const { click, handleClick } = setup();
@@ -124,6 +149,14 @@ describe("when a second passes", () => {
   });
 });
 
+describe("when the target time is exactly now", () => {
+  it("shows 0s", () => {
+    const { advanceClockToTarget, expectedTextTarget } = setup();
+    advanceClockToTarget();
+    expect(screen.getByText(expectedTextTarget)).toBeInTheDocument();
+  });
+});
+
 describe("when the target time has passed", () => {
   it("shows a negative", () => {
     const { advanceClock505PastTarget, expectedText505PastTarget } = setup();
@@ -150,6 +183,12 @@ describe("toFriendlyDuration", () => {
     expect(() => {
       toFriendlyDuration({ negative: false, hours: 1, minutes: -13 });
     }).toThrowError("Expected minutes to be a whole number.");
+  });
+
+  it("rejects durations with fractional negative members", () => {
+    expect(() => {
+      toFriendlyDuration({ negative: false, seconds: 1 / -2 });
+    }).toThrowError("Expected seconds to be a whole number.");
   });
 
   it("rejects -0s", () => {

@@ -9,7 +9,7 @@ exports[`matches snapshot 1`] = `
   <span
     role="timer"
   >
-    2h00m00s
+    11h00m00s
   </span>
 </DocumentFragment>
 `;
@@ -23,7 +23,7 @@ exports[`when a second passes matches snapshot 1`] = `
   <span
     role="timer"
   >
-    1h59m59s
+    10h59m59s
   </span>
 </DocumentFragment>
 `;
@@ -37,7 +37,7 @@ exports[`when a short time passes matches snapshot 1`] = `
   <span
     role="timer"
   >
-    2h00m00s
+    11h00m00s
   </span>
 </DocumentFragment>
 `;

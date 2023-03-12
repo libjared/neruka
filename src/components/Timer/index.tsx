@@ -66,8 +66,10 @@ function Timer() {
 
   const stopTimer = (): void => {
     // we are running.
-    if (alarmTime === null)
+    /* istanbul ignore next - unreachable */
+    if (alarmTime === null) {
       throw new Error("Expected alarmTime to be non-null.");
+    }
     const interval: Interval = {
       start: new Date(),
       end: alarmTime,

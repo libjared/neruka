@@ -25,6 +25,7 @@ function setup(args?: SetupArgs): SetupResult {
   const getAudio = () => screen.getByTitle("announcer") as HTMLAudioElement;
   const fireAudioEvent = (type: string) =>
     act(() => {
+      // TODO: replace with fireEvent
       getAudio().dispatchEvent(new Event(type));
     });
   const fireCanPlayThrough = () => fireAudioEvent("canplaythrough");

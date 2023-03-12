@@ -195,6 +195,31 @@ exports[`when hitting enter in edit mode matches snapshot 1`] = `
 </DocumentFragment>
 `;
 
+exports[`when the duration is 0 matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="DurationInput-main"
+    role="timer"
+    tabindex="0"
+  >
+    <div
+      class="DurationInput-area"
+    >
+      <span
+        class="Digit lit"
+      >
+        0
+      </span>
+      <span
+        class="Label seconds lit"
+      >
+        s
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`when typing in a time matches snapshot 1`] = `
 <DocumentFragment>
   <div

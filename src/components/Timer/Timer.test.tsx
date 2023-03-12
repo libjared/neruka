@@ -9,13 +9,29 @@ import Timer from ".";
 
 jest.useFakeTimers();
 
+type AllowedKey =
+  | "0"
+  | "1"
+  | "2"
+  | "3"
+  | "4"
+  | "5"
+  | "6"
+  | "7"
+  | "8"
+  | "9"
+  | "Backspace"
+  | "Enter";
 type SetupResult = RenderResult & {
   getTimer: () => HTMLElement;
   getTextbox: () => HTMLElement;
   clickStart: () => void;
   clickStop: () => void;
+  clickReset: () => void;
   clickCountdown: () => void;
+  focusTimer: () => void;
   blurTextbox: () => void;
+  typeKey: (key: AllowedKey) => void;
   waitOneSecond: () => void;
 };
 
@@ -35,11 +51,20 @@ function setup(): SetupResult {
   const clickStop = () => {
     fireEvent.click(screen.getByDisplayValue("Stop"));
   };
+  const clickReset = () => {
+    fireEvent.click(screen.getByDisplayValue("Reset"));
+  };
   const clickCountdown = () => {
     fireEvent.click(getTimer());
   };
+  const focusTimer = () => {
+    fireEvent.focus(getTimer());
+  };
   const blurTextbox = () => {
     fireEvent.blur(getTextbox());
+  };
+  const typeKey = (key: AllowedKey) => {
+    fireEvent.keyDown(getTextbox(), { key });
   };
   const waitOneSecond = () => {
     act(() => {
@@ -53,8 +78,11 @@ function setup(): SetupResult {
     getTextbox,
     clickStart,
     clickStop,
+    clickReset,
     clickCountdown,
+    focusTimer,
     blurTextbox,
+    typeKey,
     waitOneSecond,
   };
 }
@@ -99,6 +127,31 @@ it("stops timer", () => {
   expect(getTimer().textContent).toBe("14m59s");
 });
 
+it("resumes from paused state, after clicking Start", () => {
+  const { clickStart, waitOneSecond, getTimer } = setupStoppedAfterOneSecond();
+  clickStart();
+  waitOneSecond();
+  expect(getTimer().textContent).toBe("14m58s");
+});
+
+describe("when clicking reset while running", () => {
+  it("resets to the original duration", () => {
+    const { getTimer, clickReset } = setupStartedForOneSecond();
+    expect(getTimer().textContent).toBe("14m59s");
+    clickReset();
+    expect(getTimer().textContent).toBe("15m00s");
+  });
+});
+
+describe("when clicking reset while paused", () => {
+  it("resets to the original duration", () => {
+    const { getTimer, clickReset } = setupStoppedAfterOneSecond();
+    expect(getTimer().textContent).toBe("14m59s");
+    clickReset();
+    expect(getTimer().textContent).toBe("15m00s");
+  });
+});
+
 describe("when clicking on the countdown", () => {
   it("stops and edits", () => {
     const { clickCountdown, getTextbox } = setupStartedForOneSecond();
@@ -112,6 +165,17 @@ describe("when clicking on the countdown", () => {
     clickCountdown();
     blurTextbox();
     expect(getTimer().textContent).toBe("14m59s");
+  });
+
+  it("starts immediately on Enter", () => {
+    const { focusTimer, typeKey, waitOneSecond, getTimer } = setup();
+    focusTimer();
+    typeKey("5");
+    typeKey("8");
+    typeKey("Enter");
+    expect(getTimer().textContent).toBe("58s");
+    waitOneSecond();
+    expect(getTimer().textContent).toBe("57s");
   });
 
   it("does not force the edit view next time", () => {

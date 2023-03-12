@@ -7,6 +7,7 @@ import {
 import DurationInput, { padDigits, trimDigits } from ".";
 import { SignedDuration } from "../Types";
 
+// TODO combine with Timer.test.tsx's same type, move to Types
 type AllowedKey =
   | "0"
   | "1"
@@ -19,9 +20,11 @@ type AllowedKey =
   | "8"
   | "9"
   | "Backspace"
-  | "Enter";
+  | "Enter"
+  | "q"; // unrecognized key for testing purposes
 type SetupArgs = {
   initialEditing?: boolean;
+  duration?: SignedDuration;
 };
 type SetupResult = RenderResult & {
   focusOnTimer: () => void;
@@ -31,11 +34,8 @@ type SetupResult = RenderResult & {
 };
 
 function setup(args?: SetupArgs): SetupResult {
-  let initialEditing = false;
-  if (args !== undefined && args.initialEditing !== undefined) {
-    initialEditing = args.initialEditing;
-  }
-  const duration: SignedDuration = {
+  const initialEditing = args?.initialEditing ?? false;
+  const duration: SignedDuration = args?.duration ?? {
     negative: false,
     hours: 0,
     minutes: 15,
@@ -83,6 +83,18 @@ function setupEnteredTimeCase() {
   return utils;
 }
 
+function setupEnteredHugeTimeCase() {
+  const utils = setup();
+  utils.focusOnTimer();
+  utils.typeKey("1");
+  utils.typeKey("7");
+  utils.typeKey("5");
+  utils.typeKey("3");
+  utils.typeKey("0");
+  utils.typeKey("2");
+  return utils;
+}
+
 function setupAfterEditingCase() {
   const utils = setup();
   utils.focusOnTimer();
@@ -117,6 +129,13 @@ describe("initially", () => {
 
   it("matches snapshot", () => {
     const { asFragment } = setup();
+    expect(asFragment()).toMatchSnapshot();
+  });
+});
+
+describe("when the duration is 0", () => {
+  it("matches snapshot", () => {
+    const { asFragment } = setup({ duration: { negative: false } });
     expect(asFragment()).toMatchSnapshot();
   });
 });
@@ -156,6 +175,50 @@ describe("when typing in a time", () => {
   it("matches snapshot", () => {
     const { asFragment } = setupEnteredTimeCase();
     expect(asFragment()).toMatchSnapshot();
+  });
+});
+
+it("ignores unrecognized keys", () => {
+  const { typeKey } = setupEnteredTimeCase();
+  typeKey("q");
+  expect(screen.getByRole("textbox").textContent).toBe("00h04m51s");
+});
+
+it("ignores digits when 6 digits are already present", () => {
+  const { typeKey } = setupEnteredHugeTimeCase();
+  expect(screen.getByRole("textbox").textContent).toBe("17h53m02s");
+  typeKey("0");
+  expect(screen.getByRole("textbox").textContent).toBe("17h53m02s");
+  typeKey("Backspace");
+  expect(screen.getByRole("textbox").textContent).toBe("01h75m30s");
+});
+
+// TODO test when non-normalized times are input, eg 99 seconds
+
+it("resets to all zeroes, when deleting all-placeholder digits", () => {
+  const { typeKey } = setupEditingCase();
+  expect(screen.getByRole("textbox").textContent).toBe("00h15m00s");
+  typeKey("Backspace");
+  expect(screen.getByRole("textbox").textContent).toBe("00h00m00s");
+});
+
+describe("when deleting a typed-in time", () => {
+  it("sets the wip text", () => {
+    const { typeKey } = setupEnteredTimeCase();
+    typeKey("Backspace");
+    expect(screen.getByRole("textbox").textContent).toBe("00h00m45s");
+  });
+
+  it("does nothing if every digit is already deleted", () => {
+    const { typeKey } = setupEnteredTimeCase();
+    typeKey("Backspace");
+    expect(screen.getByRole("textbox").textContent).toBe("00h00m45s");
+    typeKey("Backspace");
+    expect(screen.getByRole("textbox").textContent).toBe("00h00m04s");
+    typeKey("Backspace");
+    expect(screen.getByRole("textbox").textContent).toBe("00h00m00s");
+    typeKey("Backspace");
+    expect(screen.getByRole("textbox").textContent).toBe("00h00m00s"); // still
   });
 });
 
@@ -209,8 +272,16 @@ describe("when hitting enter in edit mode", () => {
   });
 });
 
-test("padDigits works", () => {
-  expect(padDigits([1, 5, 0, 0])).toEqual([0, 0, 1, 5, 0, 0]);
+describe("padDigits", () => {
+  it("works", () => {
+    expect(padDigits([1, 5, 0, 0])).toEqual([0, 0, 1, 5, 0, 0]);
+  });
+
+  it("rejects inputs of length greater than 6", () => {
+    expect(() => padDigits([1, 5, 0, 0, 0, 0, 0])).toThrowError(
+      "Expected digits to be fewer or equal to 6."
+    );
+  });
 });
 
 describe("trimDigits", () => {
@@ -220,5 +291,11 @@ describe("trimDigits", () => {
 
   it("doesn't remove the last digit", () => {
     expect(trimDigits([0, 0, 0, 0, 0, 0])).toEqual([0]);
+  });
+
+  it("rejects inputs of length not 6", () => {
+    expect(() => trimDigits([1, 2, 3, 4, 5])).toThrowError(
+      "Expected digits to have a length of 6."
+    );
   });
 });
