@@ -1,16 +1,36 @@
-import { render, screen } from "@testing-library/react";
+import { render, RenderResult, screen } from "@testing-library/react";
 import Announcer, { compareDuration, findInitialIdx } from "./Announcer";
 import { act } from "react-test-renderer";
 
-function setup() {
-  const mediaPlay = jest.fn();
+type SetupResult = RenderResult & {
+  mediaPlay: jest.Mock<Promise<void>, []>;
+  getAudio: () => HTMLAudioElement;
+  fireCanPlayThrough: () => void;
+  fireEnded: () => void;
+};
+
+function setup(): SetupResult {
+  const mediaPlay = jest.fn<Promise<void>, []>();
   window.HTMLMediaElement.prototype.play = mediaPlay;
-  const originalJsx = <Announcer duration={{ negative: false, minutes: 15 }} />;
-  const utils = render(originalJsx);
+
+  const utils = render(
+    <Announcer duration={{ negative: false, minutes: 15 }} />
+  );
+
+  const getAudio = () => screen.getByTitle("announcer") as HTMLAudioElement;
+  const fireAudioEvent = (type: string) =>
+    act(() => {
+      getAudio().dispatchEvent(new Event(type));
+    });
+  const fireCanPlayThrough = () => fireAudioEvent("canplaythrough");
+  const fireEnded = () => fireAudioEvent("ended");
+
   return {
     ...utils,
-    originalJsx,
     mediaPlay,
+    getAudio,
+    fireCanPlayThrough,
+    fireEnded,
   };
 }
 
@@ -19,14 +39,20 @@ it("matches snapshot", () => {
   expect(asFragment()).toMatchSnapshot();
 });
 
-it("plays when loaded and passed", async () => {
-  const { mediaPlay } = setup();
+it("plays when loaded and passed", () => {
+  const { mediaPlay, fireCanPlayThrough } = setup();
   expect(mediaPlay).not.toHaveBeenCalled();
-  const audio = screen.getByTitle("announcer");
-  act(() => {
-    audio!.dispatchEvent(new Event("canplaythrough"));
-  });
+  fireCanPlayThrough();
   expect(mediaPlay).toHaveBeenCalledTimes(1);
+});
+
+it("targets the next milestone when the sound clip ends", () => {
+  const { getAudio, fireCanPlayThrough, fireEnded } = setup();
+  const audio = getAudio();
+  expect(audio.src).toBe("http://localhost/fifteen%20minutes%20to%20go.ogg");
+  fireCanPlayThrough();
+  fireEnded();
+  expect(audio.src).toBe("http://localhost/fourteen.ogg");
 });
 
 describe("compareDuration", () => {

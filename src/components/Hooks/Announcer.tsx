@@ -155,15 +155,9 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
     if (!shouldPlay) {
       return;
     }
-    if (audioRef.current === null) {
-      throw new Error("Expected audioRef.current not to be null.");
-      // because how would this ref not be defined, if isLoaded is true?
-    }
-    if (currentMilestone === null) {
-      throw new Error("Expected currentMilestone not to be null.");
-    }
     setIsPlaying(true);
-    audioRef.current.play();
+    // audioRef must exist if isLoaded is true
+    audioRef.current!.play();
   }, [currentMilestone, shouldPlay]);
 
   return (
@@ -176,10 +170,6 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
           setIsLoaded(true);
         }}
         onEnded={() => {
-          if (audioRef.current === null) {
-            throw new Error("Expected audioRef.current not to be null.");
-          }
-
           // FIXME: If the milestone that just ended has the same src as the
           // next, <audio src> attribute won't change, thus onCanPlayThrough
           // won't fire next time. We'll be waiting forever for it to load,
