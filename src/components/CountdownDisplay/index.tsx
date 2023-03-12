@@ -1,5 +1,5 @@
 import { add, intervalToDuration, toDate } from "date-fns";
-import Announcer from "../Hooks/Announcer";
+import Announcer from "../Announcer/Announcer";
 import useClock from "../Hooks/UseClock";
 import { BaseTenDigit, FriendlyDuration, SignedDuration } from "../Types";
 
