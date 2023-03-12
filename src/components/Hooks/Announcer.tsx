@@ -169,6 +169,7 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
   return (
     <>
       <audio
+        title="announcer"
         ref={audioRef}
         src={currentMilestone?.sound.src}
         onCanPlayThrough={() => {

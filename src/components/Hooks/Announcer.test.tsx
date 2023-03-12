@@ -1,17 +1,32 @@
-import { render } from "@testing-library/react";
-import { SignedDuration } from "../Types";
+import { render, screen } from "@testing-library/react";
 import Announcer, { compareDuration, findInitialIdx } from "./Announcer";
+import { act } from "react-test-renderer";
 
 function setup() {
-  const duration: SignedDuration = { negative: false, minutes: 15 };
-  const utils = render(<Announcer duration={duration} />);
-  return utils;
+  const mediaPlay = jest.fn();
+  window.HTMLMediaElement.prototype.play = mediaPlay;
+  const originalJsx = <Announcer duration={{ negative: false, minutes: 15 }} />;
+  const utils = render(originalJsx);
+  return {
+    ...utils,
+    originalJsx,
+    mediaPlay,
+  };
 }
 
-it("works", () => {
-  // const utils = setup();
-  // utils.rerender()
-  expect(Announcer).toBeTruthy();
+it("matches snapshot", () => {
+  const { asFragment } = setup();
+  expect(asFragment()).toMatchSnapshot();
+});
+
+it("plays when loaded and passed", async () => {
+  const { mediaPlay } = setup();
+  expect(mediaPlay).not.toHaveBeenCalled();
+  const audio = screen.getByTitle("announcer");
+  act(() => {
+    audio!.dispatchEvent(new Event("canplaythrough"));
+  });
+  expect(mediaPlay).toHaveBeenCalledTimes(1);
 });
 
 describe("compareDuration", () => {
