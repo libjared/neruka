@@ -15,13 +15,9 @@
   cursor: default;
 }
 
-.Digit,
-.Label {
+.Digit:not(.lit),
+.Label:not(.lit) {
   color: #5f6368;
-}
-.Digit.lit,
-.Label.lit {
-  color: #e8eaed;
 }
 
 .DurationInput-area .Label.seconds {

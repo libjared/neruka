@@ -1,19 +1,19 @@
 .App {
-  text-align: center;
-  min-height: 100vh;
-  background-color: #282c34;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #e8eaed;
   padding: 32px;
   row-gap: 16px;
+  height: 100%;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .App-header {
-  font-size: calc(10px + 2vmin);
-  flex-grow: 0;
+  font-size: 1.5em;
+  flex: 0 0;
 }
 
 .App-main {

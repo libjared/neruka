@@ -1,8 +1,15 @@
+.Timer {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+
 .Timer-controls {
   display: flex;
-  flex-direction: row;
 }
 
 .Timer-display {
   font-size: 3em;
+  min-height: 70px;
 }
