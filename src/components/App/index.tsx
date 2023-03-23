@@ -1,12 +1,12 @@
 import "./App.css";
-import ClockTabs from "../ClockTabs";
+import Timer from "../Timer";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">Neruka - timeboxing timer</header>
       <main className="App-main">
-        <ClockTabs />
+        <Timer />
       </main>
     </div>
   );
