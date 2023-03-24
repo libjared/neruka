@@ -1,4 +1,10 @@
-import { add, intervalToDuration } from "date-fns";
+import {
+  add,
+  intervalToDuration,
+  isPast,
+  startOfToday,
+  startOfTomorrow,
+} from "date-fns";
 import { useState } from "react";
 import CountdownDisplay from "../CountdownDisplay";
 import DurationInput from "../DurationInput";
@@ -54,6 +60,8 @@ function Timer() {
   // when the timer is running, it's null.
   // when the timer is paused, it determines whether to show the duration editing view, and force focus on it.
   const [initialEditing, setInitialEditing] = useState<boolean | null>(null);
+
+  const [targetTimeText, setTargetTimeText] = useState<string>("");
 
   const startTimer = (): void => {
     // we are stopped or paused.
@@ -130,20 +138,112 @@ function Timer() {
     );
   }
 
+  const setFromTime = () => {
+    console.log("Set target time to", targetTimeText);
+    const parsedTime = parseTime(targetTimeText);
+    if (parsedTime === null) {
+      throw new Error("Expected time to be valid.");
+    }
+    const targetDateTime = getNextOccurenceOfTime(parsedTime);
+    const newDuration = intervalToDuration({
+      start: new Date(),
+      end: targetDateTime,
+    });
+    if (
+      (newDuration.days ?? 0) > 0 ||
+      (newDuration.months ?? 0) > 0 ||
+      (newDuration.weeks ?? 0) > 0 ||
+      (newDuration.years ?? 0) > 0
+    ) {
+      throw new Error(
+        "Expected duration until next occurence of time to be less than 24 hours."
+      );
+    }
+    const newSignedDuration: SignedDuration = {
+      negative: false,
+      hours: newDuration.hours,
+      minutes: newDuration.minutes,
+      seconds: newDuration.seconds,
+    };
+    setOriginalDuration(newSignedDuration);
+    setCurrentDuration(null);
+    console.log();
+  };
+
+  const isRunning = alarmTime !== null;
+
   return (
     <div className="Timer">
       <div className="Timer-display">{display}</div>
       <nav className="Timer-controls">
-        {alarmTime !== null && (
-          <input type="button" value="Stop" onClick={stopTimer} />
-        )}
-        {alarmTime === null && (
+        {isRunning && <input type="button" value="Stop" onClick={stopTimer} />}
+        {!isRunning && (
           <input type="button" value="Start" onClick={startTimer} />
         )}
         <input type="button" value="Reset" onClick={resetTimer} />
+        <div className="Timer-break" />
+        {!isRunning && (
+          <>
+            <input
+              type="time"
+              value={targetTimeText}
+              onChange={(e) => {
+                setTargetTimeText(e.currentTarget.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setFromTime();
+                }
+              }}
+            />
+            <input type="button" value="Set from time" onClick={setFromTime} />
+          </>
+        )}
       </nav>
     </div>
   );
+}
+
+type PositiveTime = {
+  hours: number; // [0-23]
+  minutes: number;
+  seconds: number;
+};
+
+/**
+ * Parse dateTime string in HH:mm format. Usually from input type="time" element.
+ * @param dateString string in HH:mm format.
+ * @returns PositiveTime with 0 seconds if parsed, or null if no parse.
+ */
+function parseTime(dateString: string): PositiveTime | null {
+  if (dateString === "") {
+    return null;
+  }
+  const results = dateString.match(/^(\d\d):(\d\d)$/);
+  if (
+    results === null ||
+    results[1] === undefined ||
+    results[2] === undefined
+  ) {
+    return null;
+  }
+  const hours = Number(results[1]);
+  const minutes = Number(results[2]);
+  return { hours, minutes, seconds: 0 };
+}
+
+function getNextOccurenceOfTime(time: PositiveTime): Date {
+  const dateToday = startOfToday();
+  const dateTomorrow = startOfTomorrow(); // FIXME: is this DST-safe?
+  // add duration, instead of setHours/Minutes/Seconds. Why? Because startOfToday may be in UTC, so midnight won't be 00:00:00.
+  // FIXME: Not sure about the above, though.
+  // FIXME: if today is DST, does this cause any problems?
+  const dateTimeToday = add(dateToday, time);
+  const dateTimeTomorrow = add(dateTomorrow, time);
+  if (!isPast(dateTimeToday)) {
+    return dateTimeToday;
+  }
+  return dateTimeTomorrow;
 }
 
 export default Timer;

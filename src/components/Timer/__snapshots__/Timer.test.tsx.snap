@@ -60,6 +60,17 @@ exports[`matches snapshot 1`] = `
         type="button"
         value="Reset"
       />
+      <div
+        class="Timer-break"
+      />
+      <input
+        type="time"
+        value=""
+      />
+      <input
+        type="button"
+        value="Set from time"
+      />
     </nav>
   </div>
 </DocumentFragment>
