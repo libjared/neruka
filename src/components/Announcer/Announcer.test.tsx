@@ -140,18 +140,18 @@ describe("findInitialIdx", () => {
     expect(findInitialIdx(duration)).toBe(0);
   });
 
-  it("returns 1 for exactly 14m", () => {
+  it("returns the 14m milestone for exactly 14m", () => {
     const duration = { negative: false, minutes: 14, seconds: 0 };
-    expect(findInitialIdx(duration)).toBe(1);
+    expect(findInitialIdx(duration)).toBe(5);
   });
 
-  it("returns 2 for 13m59s", () => {
+  it("returns the next milestone for 13m59s", () => {
     const duration = { negative: false, minutes: 13, seconds: 59 };
-    expect(findInitialIdx(duration)).toBe(2);
+    expect(findInitialIdx(duration)).toBe(6);
   });
 
   it("returns length for a very overdue duration", () => {
     const duration = { negative: true, hours: 23 };
-    expect(findInitialIdx(duration)).toBe(28);
+    expect(findInitialIdx(duration)).toBe(32);
   });
 });

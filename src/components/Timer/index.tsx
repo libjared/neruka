@@ -139,7 +139,6 @@ function Timer() {
   }
 
   const setFromTime = () => {
-    console.log("Set target time to", targetTimeText);
     const parsedTime = parseTime(targetTimeText);
     if (parsedTime === null) {
       throw new Error("Expected time to be valid.");
@@ -167,7 +166,6 @@ function Timer() {
     };
     setOriginalDuration(newSignedDuration);
     setCurrentDuration(null);
-    console.log();
   };
 
   const isRunning = alarmTime !== null;

@@ -12,6 +12,22 @@ type MilestoneDefinition = {
 // sorted by `at` in descending order.
 const MilestoneList: ReadonlyArray<MilestoneDefinition> = [
   {
+    at: { negative: false, hours: 3 },
+    sound: audioClips.vox03htogo,
+  },
+  {
+    at: { negative: false, hours: 2 },
+    sound: audioClips.vox02htogo,
+  },
+  {
+    at: { negative: false, hours: 1 },
+    sound: audioClips.vox01htogo,
+  },
+  {
+    at: { negative: false, minutes: 30 },
+    sound: audioClips.vox30mtogo,
+  },
+  {
     at: { negative: false, minutes: 15 },
     sound: audioClips.vox15mtogo,
   },

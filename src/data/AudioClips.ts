@@ -17,11 +17,28 @@ import vox00 from "./assets/zero.ogg";
 import voxTimeAway from "./assets/timeaway.ogg";
 import vox01mrem from "./assets/one minutes remaining.ogg";
 import vox30s from "./assets/thirty seconds.ogg";
+import vox01htogo from "./assets/one hour to go.ogg";
+import vox02htogo from "./assets/two hours to go.ogg";
+import vox03htogo from "./assets/three hours to go.ogg";
+import vox30mtogo from "./assets/thirty minutes to go.ogg";
 // import quack from "./assets/quack.ogg";
+
+// to generate a combined sound clip .OGG from a directory full of HL1's VOX .WAVs:
+// cd vox
+// mkdir -p ogg
+// words="thirty seconds"; list=$(echo "$words" | tr ' ' '\n' | sed -r "s_(.*)_file '$PWD/\1.wav'_"); ffmpeg -f concat -safe 0 -i =(echo "$list") "./ogg/$words.ogg"
 
 type AudioClip = { src: string };
 
 const audioClips = {
+  // three hours to go
+  vox03htogo: { src: vox03htogo },
+  // two hours to go
+  vox02htogo: { src: vox02htogo },
+  // one hour to go
+  vox01htogo: { src: vox01htogo },
+  // thirty minutes to go
+  vox30mtogo: { src: vox30mtogo },
   // fifteen minutes to go
   vox15mtogo: { src: vox15mtogo },
   // fourteen
