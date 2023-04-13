@@ -18,6 +18,8 @@ A web-based alarm app that audibly announces time remaining every so often, incr
 - [x] Announce milestones
 - [x] Set target time directly
 - [x] Deploy
+- [x] Title/meta
+- [ ] More milestones
 - [ ] Mobile show keyboard
 - [ ] Mobile long-term notifications
 - [ ] Coverage
@@ -25,3 +27,4 @@ A web-based alarm app that audibly announces time remaining every so often, incr
 - [ ] Experiment with reducers
 - [ ] Style hms labels
 - [ ] Progress bar
+- [ ] Favicon
