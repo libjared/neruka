@@ -24,6 +24,10 @@ const MilestoneList: ReadonlyArray<MilestoneDefinition> = [
     sound: audioClips.vox01htogo,
   },
   {
+    at: { negative: false, minutes: 30 },
+    sound: audioClips.vox30mtogo,
+  },
+  {
     at: { negative: false, minutes: 15 },
     sound: audioClips.vox15mtogo,
   },
