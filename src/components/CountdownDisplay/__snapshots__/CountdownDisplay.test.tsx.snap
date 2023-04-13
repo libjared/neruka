@@ -3,7 +3,7 @@
 exports[`matches snapshot 1`] = `
 <DocumentFragment>
   <audio
-    src="fifteen minutes to go.ogg"
+    src="three hours to go.ogg"
     title="announcer"
   />
   <span
@@ -17,7 +17,7 @@ exports[`matches snapshot 1`] = `
 exports[`when a second passes matches snapshot 1`] = `
 <DocumentFragment>
   <audio
-    src="fifteen minutes to go.ogg"
+    src="three hours to go.ogg"
     title="announcer"
   />
   <span
@@ -31,7 +31,7 @@ exports[`when a second passes matches snapshot 1`] = `
 exports[`when a short time passes matches snapshot 1`] = `
 <DocumentFragment>
   <audio
-    src="fifteen minutes to go.ogg"
+    src="three hours to go.ogg"
     title="announcer"
   />
   <span
