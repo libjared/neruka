@@ -195,3 +195,7 @@ describe("when clicking on the countdown", () => {
     expect(getTimer().textContent).toBe("14m58s");
   });
 });
+
+describe("when setting duration from time", () => {
+  // TODO
+});
