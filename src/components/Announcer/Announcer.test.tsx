@@ -63,7 +63,7 @@ it("targets the next milestone when the sound clip ends", () => {
 
 it("doesn't target anything when all milestones have passed", () => {
   const { getAudio } = setup({
-    duration: { negative: true, seconds: 16 },
+    duration: { negative: true, hours: 3, minutes: 1, seconds: 1 },
   });
   const audio = getAudio();
   expect(audio.src).toBe("");
@@ -152,6 +152,6 @@ describe("findInitialIdx", () => {
 
   it("returns length for a very overdue duration", () => {
     const duration = { negative: true, hours: 23 };
-    expect(findInitialIdx(duration)).toBe(34);
+    expect(findInitialIdx(duration)).toBe(42);
   });
 });

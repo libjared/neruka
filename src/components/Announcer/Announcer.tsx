@@ -151,6 +151,34 @@ const MilestoneList: ReadonlyArray<MilestoneDefinition> = [
     at: { negative: true, minutes: 10 },
     sound: audioClips.vox10mreached,
   },
+  {
+    at: { negative: true, minutes: 15 },
+    sound: audioClips.vox15mreached,
+  },
+  {
+    at: { negative: true, minutes: 30 },
+    sound: audioClips.vox30mreached,
+  },
+  {
+    at: { negative: true, minutes: 45 },
+    sound: audioClips.vox45mreached,
+  },
+  {
+    at: { negative: true, hours: 1 },
+    sound: audioClips.vox01hreached,
+  },
+  {
+    at: { negative: true, hours: 2 },
+    sound: audioClips.vox02hreached,
+  },
+  {
+    at: { negative: true, hours: 3 },
+    sound: audioClips.vox03hreached,
+  },
+  {
+    at: { negative: true, hours: 3, minutes: 1 },
+    sound: audioClips.vox03h01mreached,
+  },
 ];
 
 type AnnouncerProps = {
