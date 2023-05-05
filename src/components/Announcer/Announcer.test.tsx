@@ -142,16 +142,16 @@ describe("findInitialIdx", () => {
 
   it("returns the 14m milestone for exactly 14m", () => {
     const duration = { negative: false, minutes: 14, seconds: 0 };
-    expect(findInitialIdx(duration)).toBe(5);
+    expect(findInitialIdx(duration)).toBe(7);
   });
 
   it("returns the next milestone for 13m59s", () => {
     const duration = { negative: false, minutes: 13, seconds: 59 };
-    expect(findInitialIdx(duration)).toBe(6);
+    expect(findInitialIdx(duration)).toBe(8);
   });
 
   it("returns length for a very overdue duration", () => {
     const duration = { negative: true, hours: 23 };
-    expect(findInitialIdx(duration)).toBe(32);
+    expect(findInitialIdx(duration)).toBe(34);
   });
 });

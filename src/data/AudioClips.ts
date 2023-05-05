@@ -21,6 +21,8 @@ import vox01htogo from "./assets/one hour to go.ogg";
 import vox02htogo from "./assets/two hours to go.ogg";
 import vox03htogo from "./assets/three hours to go.ogg";
 import vox30mtogo from "./assets/thirty minutes to go.ogg";
+import vox04h from "./assets/four hours.ogg";
+import vox45mtogo from "./assets/fourty five minutes to go.ogg";
 // import quack from "./assets/quack.ogg";
 
 // to generate a combined sound clip .OGG from a directory full of HL1's VOX .WAVs:
@@ -31,12 +33,16 @@ import vox30mtogo from "./assets/thirty minutes to go.ogg";
 type AudioClip = { src: string };
 
 const audioClips = {
+  // four hours
+  vox04h: { src: vox04h },
   // three hours to go
   vox03htogo: { src: vox03htogo },
   // two hours to go
   vox02htogo: { src: vox02htogo },
   // one hour to go
   vox01htogo: { src: vox01htogo },
+  // "fourty" five minutes to go
+  vox45mtogo: { src: vox45mtogo },
   // thirty minutes to go
   vox30mtogo: { src: vox30mtogo },
   // fifteen minutes to go
