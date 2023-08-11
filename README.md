@@ -23,8 +23,8 @@ A web-based alarm app that audibly announces time remaining every so often, incr
 - [x] Even more milestones
 - [x] Post-milestones
 - [x] Volume slider
+- [x] Don't startle me
 - [ ] Make setting from time the primary method of input
-- [ ] Don't startle me
 - [ ] Mobile show keyboard
 - [ ] Mobile long-term notifications
 - [ ] Domain name, edge CDN

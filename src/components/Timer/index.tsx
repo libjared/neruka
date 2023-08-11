@@ -63,7 +63,7 @@ function Timer() {
 
   const [targetTimeText, setTargetTimeText] = useState<string>("");
 
-  const [volume, setVolume] = useState<number>(1.0);
+  const [volume, setVolume] = useState<number>(0.3);
 
   const startTimer = (): void => {
     // we are stopped or paused.
