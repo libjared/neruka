@@ -21,7 +21,7 @@ function setup(args?: SetupArgs): SetupResult {
   window.HTMLMediaElement.prototype.play = mediaPlay;
 
   const duration = args?.duration ?? { negative: false, minutes: 15 };
-  const volume = args?.volume ?? 50;
+  const volume = args?.volume ?? 0.5;
 
   const utils = render(<Announcer duration={duration} volume={volume} />);
 
@@ -86,7 +86,7 @@ it("reacts to changes in volume immediately", () => {
   const { getAudio, changeVolume } = setup();
   const audio = getAudio();
   expect(audio.volume).not.toBe(0.2);
-  changeVolume(20);
+  changeVolume(0.2);
   expect(audio.volume).toBe(0.2);
 });
 

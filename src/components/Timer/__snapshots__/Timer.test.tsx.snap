@@ -80,9 +80,12 @@ exports[`matches snapshot 1`] = `
         Volume
       </label>
       <input
+        max="1"
+        min="0"
         name="volume"
+        step="0.01"
         type="range"
-        value="100"
+        value="1"
       />
       <span>
         100

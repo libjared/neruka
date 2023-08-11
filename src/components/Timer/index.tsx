@@ -63,7 +63,7 @@ function Timer() {
 
   const [targetTimeText, setTargetTimeText] = useState<string>("");
 
-  const [volume, setVolume] = useState<number>(100);
+  const [volume, setVolume] = useState<number>(1.0);
 
   const startTimer = (): void => {
     // we are stopped or paused.
@@ -208,6 +208,9 @@ function Timer() {
         <input
           type="range"
           name="volume"
+          max={1.0}
+          min={0.0}
+          step={0.01}
           value={volume}
           onChange={(e) => {
             const newVolume = Number(e.currentTarget.value);
@@ -215,7 +218,7 @@ function Timer() {
             setVolume(newVolume);
           }}
         />
-        <span>{volume}</span>
+        <span>{Math.round(volume * 100)}</span>
       </nav>
     </div>
   );

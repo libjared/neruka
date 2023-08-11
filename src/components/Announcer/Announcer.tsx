@@ -199,7 +199,7 @@ const Announcer = React.memo(({ duration, volume }: AnnouncerProps) => {
 
   useEffect(() => {
     if (audioRef.current !== null) {
-      audioRef.current.volume = volume / 100;
+      audioRef.current.volume = Math.min(Math.max(volume, 0.0), 1.0);
     }
   }, [volume]);
 
