@@ -71,6 +71,22 @@ exports[`matches snapshot 1`] = `
         type="button"
         value="Set from time"
       />
+      <div
+        class="Timer-break"
+      />
+      <label
+        for="volume"
+      >
+        Volume
+      </label>
+      <input
+        name="volume"
+        type="range"
+        value="100"
+      />
+      <span>
+        100
+      </span>
     </nav>
   </div>
 </DocumentFragment>

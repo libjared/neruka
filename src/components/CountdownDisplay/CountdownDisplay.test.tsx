@@ -33,7 +33,11 @@ function setup(): SetupResult {
   const targetTime = new Date(2023, 1, 15, 11, 0);
   const handleClick = jest.fn<void, void[]>();
   const utils: RenderResult = render(
-    <CountdownDisplay targetTime={targetTime} onClick={handleClick} />
+    <CountdownDisplay
+      targetTime={targetTime}
+      volume={100}
+      onClick={handleClick}
+    />
   );
   const advanceClockShort = () => {
     act(() => {

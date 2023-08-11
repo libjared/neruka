@@ -5,6 +5,7 @@ import { SignedDuration } from "../Types";
 
 type SetupArgs = {
   duration: SignedDuration;
+  volume?: number;
 };
 
 type SetupResult = RenderResult & {
@@ -12,6 +13,7 @@ type SetupResult = RenderResult & {
   getAudio: () => HTMLAudioElement;
   fireCanPlayThrough: () => void;
   fireEnded: () => void;
+  changeVolume: (newVolume: number) => void;
 };
 
 function setup(args?: SetupArgs): SetupResult {
@@ -19,8 +21,9 @@ function setup(args?: SetupArgs): SetupResult {
   window.HTMLMediaElement.prototype.play = mediaPlay;
 
   const duration = args?.duration ?? { negative: false, minutes: 15 };
+  const volume = args?.volume ?? 50;
 
-  const utils = render(<Announcer duration={duration} />);
+  const utils = render(<Announcer duration={duration} volume={volume} />);
 
   const getAudio = () => screen.getByTitle("announcer") as HTMLAudioElement;
   const fireAudioEvent = (type: string) =>
@@ -30,6 +33,9 @@ function setup(args?: SetupArgs): SetupResult {
     });
   const fireCanPlayThrough = () => fireAudioEvent("canplaythrough");
   const fireEnded = () => fireAudioEvent("ended");
+  const changeVolume = (newVolume: number) => {
+    utils.rerender(<Announcer duration={duration} volume={newVolume} />);
+  };
 
   return {
     ...utils,
@@ -37,6 +43,7 @@ function setup(args?: SetupArgs): SetupResult {
     getAudio,
     fireCanPlayThrough,
     fireEnded,
+    changeVolume,
   };
 }
 
@@ -67,6 +74,20 @@ it("doesn't target anything when all milestones have passed", () => {
   });
   const audio = getAudio();
   expect(audio.src).toBe("");
+});
+
+it("sets volume correctly", () => {
+  const { getAudio } = setup();
+  const audio = getAudio();
+  expect(audio.volume).toBe(0.5);
+});
+
+it("reacts to changes in volume immediately", () => {
+  const { getAudio, changeVolume } = setup();
+  const audio = getAudio();
+  expect(audio.volume).not.toBe(0.2);
+  changeVolume(20);
+  expect(audio.volume).toBe(0.2);
 });
 
 describe("compareDuration", () => {

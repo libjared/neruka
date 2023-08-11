@@ -5,10 +5,15 @@ import { BaseTenDigit, FriendlyDuration, SignedDuration } from "../Types";
 
 type CountdownDisplayProps = {
   targetTime: Date;
+  volume: number;
   onClick: () => void;
 };
 
-function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
+function CountdownDisplay({
+  targetTime,
+  volume,
+  onClick,
+}: CountdownDisplayProps) {
   const currentTime = useClock();
 
   const handleClick = () => {
@@ -24,7 +29,7 @@ function CountdownDisplay({ targetTime, onClick }: CountdownDisplayProps) {
 
   return (
     <>
-      <Announcer duration={duration} />
+      <Announcer duration={duration} volume={volume} />
       <span role="timer" onClick={handleClick}>
         {text}
       </span>
