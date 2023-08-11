@@ -217,7 +217,15 @@ function Timer() {
             // TODO: assert !isNan
             setVolume(newVolume);
           }}
+          list="volume-markers"
         />
+        <datalist id="volume-markers">
+          <option value={0.0} />
+          <option value={0.25} />
+          <option value={0.5} />
+          <option value={0.75} />
+          <option value={1.0} />
+        </datalist>
         <span>{Math.round(volume * 100)}</span>
       </nav>
     </div>
