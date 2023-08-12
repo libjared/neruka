@@ -63,6 +63,8 @@ function Timer() {
 
   const [targetTimeText, setTargetTimeText] = useState<string>("");
 
+  const [volume, setVolume] = useState<number>(0.3);
+
   const startTimer = (): void => {
     // we are stopped or paused.
     const targetDuration =
@@ -109,7 +111,11 @@ function Timer() {
   if (alarmTime !== null) {
     // running
     display = (
-      <CountdownDisplay targetTime={alarmTime} onClick={stopAndEditTimer} />
+      <CountdownDisplay
+        targetTime={alarmTime}
+        volume={volume}
+        onClick={stopAndEditTimer}
+      />
     );
   } else {
     // paused or stopped
@@ -197,6 +203,22 @@ function Timer() {
             <input type="button" value="Set from time" onClick={setFromTime} />
           </>
         )}
+        <div className="Timer-break" />
+        <label htmlFor="volume">Volume</label>
+        <input
+          type="range"
+          name="volume"
+          max={1.0}
+          min={0.0}
+          step={0.01}
+          value={volume}
+          onChange={(e) => {
+            const newVolume = Number(e.currentTarget.value);
+            // TODO: assert !isNan
+            setVolume(newVolume);
+          }}
+        />
+        <span>{Math.round(volume * 100)}</span>
       </nav>
     </div>
   );

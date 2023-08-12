@@ -21,6 +21,16 @@ import vox01htogo from "./assets/one hour to go.ogg";
 import vox02htogo from "./assets/two hours to go.ogg";
 import vox03htogo from "./assets/three hours to go.ogg";
 import vox30mtogo from "./assets/thirty minutes to go.ogg";
+import vox04h from "./assets/four hours.ogg";
+import vox45mtogo from "./assets/fourty five minutes to go.ogg";
+import vox10mreached from "./assets/ten minutes reached.ogg";
+import vox15mreached from "./assets/fifteen minutes reached.ogg";
+import vox30mreached from "./assets/thirty minutes reached.ogg";
+import vox45mreached from "./assets/fourty five minutes reached.ogg";
+import vox01hreached from "./assets/one hour reached.ogg";
+import vox02hreached from "./assets/two hours reached.ogg";
+import vox03hreached from "./assets/three hours reached.ogg";
+import vox03h01mreached from "./assets/three hours and one minutes reached _comma nice going idiot.ogg";
 // import quack from "./assets/quack.ogg";
 
 // to generate a combined sound clip .OGG from a directory full of HL1's VOX .WAVs:
@@ -31,12 +41,16 @@ import vox30mtogo from "./assets/thirty minutes to go.ogg";
 type AudioClip = { src: string };
 
 const audioClips = {
+  // four hours
+  vox04h: { src: vox04h },
   // three hours to go
   vox03htogo: { src: vox03htogo },
   // two hours to go
   vox02htogo: { src: vox02htogo },
   // one hour to go
   vox01htogo: { src: vox01htogo },
+  // "fourty" five minutes to go
+  vox45mtogo: { src: vox45mtogo },
   // thirty minutes to go
   vox30mtogo: { src: vox30mtogo },
   // fifteen minutes to go
@@ -77,6 +91,22 @@ const audioClips = {
   vox00: { src: vox00 },
   // time to get away from the computer and go to your room, good day
   voxTimeAway: { src: voxTimeAway },
+  // ten minutes reached
+  vox10mreached: { src: vox10mreached },
+  // fifteen minutes reached
+  vox15mreached: { src: vox15mreached },
+  // thirty minutes reached
+  vox30mreached: { src: vox30mreached },
+  // "fourty" five minutes reached
+  vox45mreached: { src: vox45mreached },
+  // one hour reached
+  vox01hreached: { src: vox01hreached },
+  // two hours reached
+  vox02hreached: { src: vox02hreached },
+  // three hours reached
+  vox03hreached: { src: vox03hreached },
+  // three hours and one minute reached, nice going idiot
+  vox03h01mreached: { src: vox03h01mreached },
 };
 
 export default audioClips;

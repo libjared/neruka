@@ -12,6 +12,10 @@ type MilestoneDefinition = {
 // sorted by `at` in descending order.
 const MilestoneList: ReadonlyArray<MilestoneDefinition> = [
   {
+    at: { negative: false, hours: 4 },
+    sound: audioClips.vox04h,
+  },
+  {
     at: { negative: false, hours: 3 },
     sound: audioClips.vox03htogo,
   },
@@ -22,6 +26,10 @@ const MilestoneList: ReadonlyArray<MilestoneDefinition> = [
   {
     at: { negative: false, hours: 1 },
     sound: audioClips.vox01htogo,
+  },
+  {
+    at: { negative: false, minutes: 45 },
+    sound: audioClips.vox45mtogo,
   },
   {
     at: { negative: false, minutes: 30 },
@@ -139,13 +147,46 @@ const MilestoneList: ReadonlyArray<MilestoneDefinition> = [
     at: { negative: true, seconds: 10 },
     sound: audioClips.voxTimeAway,
   },
+  {
+    at: { negative: true, minutes: 10 },
+    sound: audioClips.vox10mreached,
+  },
+  {
+    at: { negative: true, minutes: 15 },
+    sound: audioClips.vox15mreached,
+  },
+  {
+    at: { negative: true, minutes: 30 },
+    sound: audioClips.vox30mreached,
+  },
+  {
+    at: { negative: true, minutes: 45 },
+    sound: audioClips.vox45mreached,
+  },
+  {
+    at: { negative: true, hours: 1 },
+    sound: audioClips.vox01hreached,
+  },
+  {
+    at: { negative: true, hours: 2 },
+    sound: audioClips.vox02hreached,
+  },
+  {
+    at: { negative: true, hours: 3 },
+    sound: audioClips.vox03hreached,
+  },
+  {
+    at: { negative: true, hours: 3, minutes: 1 },
+    sound: audioClips.vox03h01mreached,
+  },
 ];
 
 type AnnouncerProps = {
   duration: SignedDuration;
+  volume: number;
 };
 
-const Announcer = React.memo(({ duration }: AnnouncerProps) => {
+const Announcer = React.memo(({ duration, volume }: AnnouncerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   // the idx of the next upcoming milestone, or the one whose sound we're currently playing.
   const [currentIdx, setCurrentIdx] = useState<number>(() =>
@@ -155,6 +196,12 @@ const Announcer = React.memo(({ duration }: AnnouncerProps) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   // flag indicating whether the audio is currently busy saying the milestone at currentIdx.
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (audioRef.current !== null) {
+      audioRef.current.volume = Math.min(Math.max(volume, 0.0), 1.0);
+    }
+  }, [volume]);
 
   const currentMilestone: MilestoneDefinition | null =
     currentIdx < MilestoneList.length ? MilestoneList[currentIdx] : null;
@@ -203,7 +250,10 @@ function propsAreEqual(
   prevProps: Readonly<AnnouncerProps>,
   nextProps: Readonly<AnnouncerProps>
 ): boolean {
-  return signedDurationEqual(prevProps.duration, nextProps.duration);
+  return (
+    signedDurationEqual(prevProps.duration, nextProps.duration) &&
+    prevProps.volume === nextProps.volume
+  );
 }
 
 function signedDurationEqual(a: SignedDuration, b: SignedDuration): boolean {
